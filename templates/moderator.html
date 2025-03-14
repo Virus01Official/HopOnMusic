@@ -2,19 +2,29 @@
 
 {% block content %}
     <h1 class="display-4">Moderator Dashboard</h1>
-    <ul class="list-group">
+    <div class="row">
         {% for song in songs %}
-            <li class="list-group-item">
-                <strong>{{ song[1] }}</strong> - {{ song[2] }} (Uploaded by {{ song[4] }})
-                <audio controls class="w-100 mt-2">
-                    <source src="{{ url_for('static', filename='songs/' + song[3]) }}" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
-                <form action="{{ url_for('delete_song', song_id=song[0]) }}" method="POST" class="mt-2">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
-            </li>
+            <div class="col-md-4 mb-4">
+                <div class="card bg-secondary text-light">
+                    {% if song[3] %}
+                        <img src="{{ url_for('static', filename='songs/' + song[3]) }}" class="card-img-top" alt="{{ song[1] }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='songs/default-thumbnail.jpg') }}" class="card-img-top" alt="Default Thumbnail">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ song[1] }}</h5>
+                        <p class="card-text">{{ song[2] }} (Uploaded by {{ song[4] }})</p>
+                        <audio controls class="w-100">
+                            <source src="{{ url_for('static', filename='songs/' + song[3]) }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                        <form action="{{ url_for('delete_song', song_id=song[0]) }}" method="POST" class="mt-2">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
     <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Home</a>
 {% endblock %}

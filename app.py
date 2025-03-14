@@ -28,6 +28,7 @@ def init_db():
                 title TEXT NOT NULL,
                 artist TEXT NOT NULL,
                 filename TEXT NOT NULL,
+                thumbnail TEXT,  -- New column for thumbnail
                 user_id INTEGER,
                 FOREIGN KEY (user_id) REFERENCES users (id)
             )
@@ -101,25 +102,36 @@ def upload():
         title = request.form['title']
         artist = request.form['artist']
         file = request.files['file']
+        thumbnail = request.files['thumbnail']
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
 
+            # Save thumbnail if provided
+            thumbnail_filename = None
+            if thumbnail and allowed_image(thumbnail.filename):
+                thumbnail_filename = secure_filename(thumbnail.filename)
+                thumbnail_path = os.path.join(app.config['UPLOAD_FOLDER'], thumbnail_filename)
+                thumbnail.save(thumbnail_path)
+
             with sqlite3.connect('database.db') as conn:
                 cursor = conn.cursor()
-                cursor.execute('INSERT INTO songs (title, artist, filename, user_id) VALUES (?, ?, ?, ?)',
-                              (title, artist, filename, session['user_id']))
+                cursor.execute('INSERT INTO songs (title, artist, filename, thumbnail, user_id) VALUES (?, ?, ?, ?, ?)',
+                              (title, artist, filename, thumbnail_filename, session['user_id']))
                 conn.commit()
 
             flash('Song uploaded successfully!')
             return redirect(url_for('player'))
-
         else:
             flash('Invalid file type. Only MP3 files are allowed.')
 
     return render_template('upload.html')
+
+# Helper function to check image file extensions
+def allowed_image(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'jpg', 'jpeg', 'png', 'gif'}
 
 @app.route('/player')
 def player():
@@ -128,7 +140,7 @@ def player():
 
     with sqlite3.connect('database.db') as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT id, title, artist, filename, user_id FROM songs')
+        cursor.execute('SELECT id, title, artist, filename, thumbnail, user_id FROM songs')
         songs = cursor.fetchall()
 
     return render_template('player.html', songs=songs)
@@ -176,6 +188,33 @@ def moderator():
         songs = cursor.fetchall()
 
     return render_template('moderator.html', songs=songs)
+
+@app.route('/promote/<int:user_id>', methods=['POST'])
+def promote_user(user_id):
+    if 'username' not in session or session.get('role') != 'moderator':
+        return redirect(url_for('login'))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('UPDATE users SET role = ? WHERE id = ?', ('moderator', user_id))
+        conn.commit()
+
+    flash('User promoted to moderator.')
+    return redirect(url_for('manage_users'))
+
+
+@app.route('/manage_users')
+def manage_users():
+    if 'username' not in session or session.get('role') != 'moderator':
+        return redirect(url_for('login'))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT id, username, role FROM users')
+        users = cursor.fetchall()
+
+    return render_template('manage_users.html', users=users)
+
 
 if __name__ == '__main__':
     # Create the upload folder if it doesn't exist

@@ -1,0 +1,19 @@
+<h2>Manage Users</h2>
+<table>
+    <tr><th>Username</th><th>Role</th><th>Action</th></tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user[1] }}</td>
+        <td>{{ user[2] }}</td>
+        <td>
+            {% if user[2] != 'moderator' %}
+            <form action="{{ url_for('promote_user', user_id=user[0]) }}" method="post">
+                <button type="submit">Promote to Moderator</button>
+            </form>
+            {% else %}
+                Already Moderator
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
