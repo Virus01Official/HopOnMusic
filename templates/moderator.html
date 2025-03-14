@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="display-4">Moderator Dashboard</h1>
+    <ul class="list-group">
+        {% for song in songs %}
+            <li class="list-group-item bg-secondary text-light">
+                <strong>{{ song[1] }}</strong> - {{ song[2] }} (Uploaded by {{ song[4] }})
+                <audio controls class="w-100 mt-2">
+                    <source src="{{ url_for('static', filename='songs/' + song[3]) }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <form action="{{ url_for('delete_song', song_id=song[0]) }}" method="POST" class="mt-2">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Home</a>
+{% endblock %}
