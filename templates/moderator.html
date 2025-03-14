@@ -4,7 +4,7 @@
     <h1 class="display-4">Moderator Dashboard</h1>
     <ul class="list-group">
         {% for song in songs %}
-            <li class="list-group-item bg-secondary text-light">
+            <li class="list-group-item">
                 <strong>{{ song[1] }}</strong> - {{ song[2] }} (Uploaded by {{ song[4] }})
                 <audio controls class="w-100 mt-2">
                     <source src="{{ url_for('static', filename='songs/' + song[3]) }}" type="audio/mpeg">

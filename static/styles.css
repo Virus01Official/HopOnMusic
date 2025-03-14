@@ -1,11 +1,61 @@
-/* Custom styles */
+:root {
+    --primary-color: #4600c9; /* Bootstrap primary color */
+    --background-color: #16000f; /* Dark background */
+    --text-color: #ffffff; /* White text */
+    --card-background: #2d2d2d; /* Dark card background */
+    --card-border: #444; /* Card border color */
+    --font-family: 'Poppins', sans-serif; /* Default font */
+}
+
+/* Custom Audio Player Styles */
+audio {
+    width: 100%;
+    margin-top: 10px;
+}
+
+audio::-webkit-media-controls-panel {
+    background-color: var(--card-background);
+    border-radius: 10px;
+    border: 1px solid var(--card-border);
+}
+
+audio::-webkit-media-controls-play-button,
+audio::-webkit-media-controls-mute-button {
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    color: white;
+}
+
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+    color: var(--text-color);
+}
+
+audio::-webkit-media-controls-timeline {
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    margin: 0 10px;
+}
+
+audio::-webkit-media-controls-volume-slider {
+    background-color: var(--primary-color);
+    border-radius: 5px;
+}
+
 body {
-    background-color: #1a1a1a;
-    color: #ffffff;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
 }
 
 .navbar {
-    margin-bottom: 20px;
+    background-color: var(--primary-color) !important;
+}
+
+.list-group-item {
+    background-color: var(--card-background);
+    border-color: var(--card-border);
+    color: var(--text-color);
 }
 
 .audio-controls {
@@ -13,7 +63,16 @@ body {
     margin-top: 10px;
 }
 
-.list-group-item {
-    border: 1px solid #444;
-    margin-bottom: 10px;
+.alert-info {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.audio-player {
+    background-color: var(--card-background);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 10px;
 }

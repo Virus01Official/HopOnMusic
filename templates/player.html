@@ -5,12 +5,14 @@
     <a href="{{ url_for('upload') }}" class="btn btn-primary mb-3">Upload a Song</a>
     <ul class="list-group">
         {% for song in songs %}
-            <li class="list-group-item bg-secondary text-light">
+            <li class="list-group-item">
                 <strong>{{ song[1] }}</strong> - {{ song[2] }}
-                <audio controls class="w-100 mt-2">
-                    <source src="{{ url_for('static', filename='songs/' + song[3]) }}" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
+                <div class="audio-player">
+                    <audio controls>
+                        <source src="{{ url_for('static', filename='songs/' + song[3]) }}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
                 {% if session['user_id'] == song[4] or session['role'] == 'moderator' %}
                     <form action="{{ url_for('delete_song', song_id=song[0]) }}" method="POST" class="mt-2">
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
