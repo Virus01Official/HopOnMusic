@@ -1,22 +1,70 @@
 :root {
-    --primary-color: #4600c9; /* Bootstrap primary color */
-    --background-color: #16000f; /* Dark background */
-    --text-color: #ffffff; /* White text */
-    --card-background: #2d2d2d; /* Dark card background */
-    --card-border: #444; /* Card border color */
-    --font-family: 'Poppins', sans-serif; /* Default font */
+    --primary-color: #1db954; /* Spotify green */
+    --accent-color: #1ed760;
+    --background-color: #121212; /* Deeper dark background */
+    --text-color: #ffffff;
+    --subtext-color: #b3b3b3;
+    --card-background: #181818;
+    --card-border: #282828;
+    --font-family: 'Poppins', sans-serif;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --transition-speed: 0.3s;
 }
 
-/* Custom Audio Player Styles */
+/* General Styling */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: var(--background-color) !important;
+    border-bottom: 1px solid var(--card-border);
+    box-shadow: var(--shadow);
+}
+
+.list-group-item {
+    background-color: var(--card-background);
+    border-color: var(--card-border);
+    color: var(--text-color);
+    transition: background-color var(--transition-speed);
+}
+
+.list-group-item:hover {
+    background-color: #222222;
+}
+
+/* Audio Player Container */
+.audio-player {
+    background-color: var(--card-background);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: var(--shadow);
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+}
+
+.audio-player:hover {
+    background-color: #1e1e1e;
+    transform: translateY(-2px);
+}
+
+/* Audio Element Styles */
 audio {
     width: 100%;
     margin-top: 10px;
 }
 
+/* WebKit Audio Controls Customization */
 audio::-webkit-media-controls-panel {
     background-color: var(--card-background);
-    border-radius: 10px;
+    border-radius: 12px;
     border: 1px solid var(--card-border);
+    padding: 4px;
 }
 
 audio::-webkit-media-controls-play-button,
@@ -24,55 +72,42 @@ audio::-webkit-media-controls-mute-button {
     background-color: var(--primary-color);
     border-radius: 50%;
     color: white;
+    transition: background-color var(--transition-speed);
+}
+
+audio::-webkit-media-controls-play-button:hover,
+audio::-webkit-media-controls-mute-button:hover {
+    background-color: var(--accent-color);
 }
 
 audio::-webkit-media-controls-current-time-display,
 audio::-webkit-media-controls-time-remaining-display {
-    color: var(--text-color);
+    color: var(--subtext-color);
 }
 
 audio::-webkit-media-controls-timeline {
     background-color: var(--primary-color);
-    border-radius: 5px;
-    margin: 0 10px;
+    border-radius: 6px;
+    margin: 0 12px;
 }
 
 audio::-webkit-media-controls-volume-slider {
     background-color: var(--primary-color);
-    border-radius: 5px;
+    border-radius: 6px;
 }
 
-body {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: var(--font-family);
-}
-
-.navbar {
-    background-color: var(--primary-color) !important;
-}
-
-.list-group-item {
-    background-color: var(--card-background);
-    border-color: var(--card-border);
-    color: var(--text-color);
-}
-
-.audio-controls {
-    width: 100%;
-    margin-top: 10px;
-}
-
+/* Extra Styling for Alerts / UI Elements */
 .alert-info {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
     color: var(--text-color);
+    border-radius: 12px;
+    padding: 10px 15px;
+    box-shadow: var(--shadow);
+    font-weight: 500;
 }
 
-.audio-player {
-    background-color: var(--card-background);
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
-    padding: 10px;
-    margin-top: 10px;
+/* Smooth Transition Utility */
+* {
+    transition: background-color var(--transition-speed), color var(--transition-speed), border-color var(--transition-speed);
 }
