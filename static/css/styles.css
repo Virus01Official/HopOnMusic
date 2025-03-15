@@ -292,3 +292,23 @@ ul, ol {
 ul li, ol li {
 	margin-bottom: 0.25rem;
 }
+
+.social-links {
+    list-style-type: none;
+    padding: 0;
+}
+
+.social-links li {
+    display: inline;
+    margin-right: 10px;
+}
+
+.social-icon {
+    font-size: 1.5em;
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.social-icon:hover {
+    color: #007bff;  /* Change to desired hover color */
+}
