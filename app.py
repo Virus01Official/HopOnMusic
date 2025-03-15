@@ -211,6 +211,50 @@ def promote_user(user_id):
     flash('User promoted to moderator.')
     return redirect(url_for('manage_users'))
 
+@app.route('/edit_song/<int:song_id>', methods=['GET', 'POST'])
+def edit_song(song_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT id, title, artist, filename, thumbnail, user_id FROM songs WHERE id = ?', (song_id,))
+        song = cursor.fetchone()
+
+        if not song:
+            flash('Song not found.')
+            return redirect(url_for('player'))
+
+        # Authorization check
+        if session['role'] != 'moderator' and song[5] != session['user_id']:
+            flash('You do not have permission to edit this song.')
+            return redirect(url_for('player'))
+
+        if request.method == 'POST':
+            new_title = request.form['title']
+            new_artist = request.form['artist']
+            new_thumbnail_file = request.files.get('thumbnail')
+
+            new_thumbnail_filename = song[4]  # Keep existing thumbnail by default
+
+            if new_thumbnail_file and allowed_image(new_thumbnail_file.filename):
+                new_thumbnail_filename = secure_filename(new_thumbnail_file.filename)
+                thumbnail_path = os.path.join(app.config['UPLOAD_FOLDER'], new_thumbnail_filename)
+                new_thumbnail_file.save(thumbnail_path)
+
+            cursor.execute('''
+                UPDATE songs SET title = ?, artist = ?, thumbnail = ?
+                WHERE id = ?
+            ''', (new_title, new_artist, new_thumbnail_filename, song_id))
+            conn.commit()
+
+            flash('Song updated successfully.')
+            return redirect(url_for('player'))
+
+    return render_template('edit_song.html', song=song)
+
+
 @app.route('/manage_users')
 def manage_users():
     if 'username' not in session or session.get('role') != 'moderator':

@@ -1,0 +1,34 @@
+<!-- templates/edit_song.html -->
+{% extends "base.html" %}
+
+{% block title %}Edit Song - HopOn Music{% endblock %}
+
+{% block content %}
+<div class="card bg-secondary text-light shadow-lg rounded-4 p-4">
+    <h2 class="mb-4 text-success">Edit Song</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="title" class="form-label">Song Title</label>
+            <input type="text" class="form-control bg-dark text-light border-0 shadow-sm" id="title" name="title" value="{{ song[1] }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="artist" class="form-label">Artist</label>
+            <input type="text" class="form-control bg-dark text-light border-0 shadow-sm" id="artist" name="artist" value="{{ song[2] }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="thumbnail" class="form-label">Change Thumbnail (optional)</label>
+            <input type="file" class="form-control bg-dark text-light border-0 shadow-sm" id="thumbnail" name="thumbnail" accept="image/*">
+        </div>
+        {% if song[4] %}
+        <div class="mb-3">
+            <p>Current Thumbnail:</p>
+            <img src="{{ url_for('static', filename='songs/' + song[4]) }}" alt="Current Thumbnail" class="img-thumbnail" style="max-width: 200px;">
+        </div>
+        {% endif %}
+        <div class="d-flex justify-content-between">
+            <a href="{{ url_for('player') }}" class="btn btn-outline-light">Cancel</a>
+            <button type="submit" class="btn btn-success">Save Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
