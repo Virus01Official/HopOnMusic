@@ -4,9 +4,8 @@ import os
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Change this to a secure key in production
+app.secret_key = 'your_secret_key'  # i gotta change in later uwu
 
-# Configuration for file uploads
 app.config['UPLOAD_FOLDER'] = 'static/songs'
 app.config['ALLOWED_EXTENSIONS'] = {'mp3'}
 
@@ -37,11 +36,9 @@ def init_db():
 
 init_db()
 
-# Helper function to check file extensions
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-# Routes
 @app.route('/')
 def index():
     if 'username' in session:
@@ -129,7 +126,6 @@ def upload():
 
     return render_template('upload.html')
 
-# Helper function to check image file extensions
 def allowed_image(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'jpg', 'jpeg', 'png', 'gif'}
 
@@ -168,7 +164,7 @@ def delete_song(song_id):
             if os.path.exists(filepath):
                 os.remove(filepath)
 
-            # Delete the song from the database
+            # Delete the song from the database because duh
             cursor.execute('DELETE FROM songs WHERE id = ?', (song_id,))
             conn.commit()
             flash('Song deleted successfully.')
@@ -217,7 +213,6 @@ def manage_users():
 
 
 if __name__ == '__main__':
-    # Create the upload folder if it doesn't exist
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
 
