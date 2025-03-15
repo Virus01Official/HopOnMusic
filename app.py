@@ -2,12 +2,22 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import sqlite3
 import os
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
+import mimetypes
+from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
+
+# Initialize Flask app
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # i gotta change in later uwu
 
+# Load configurations from environment variables
+app.secret_key = os.getenv('SECRET_KEY', 'default_secret_key')
 app.config['UPLOAD_FOLDER'] = 'static/songs'
 app.config['ALLOWED_EXTENSIONS'] = {'mp3'}
+app.config['SESSION_COOKIE_SECURE'] = True  # Secure cookies for HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JS access to cookies
 
 # Database initialization
 def init_db():
@@ -37,7 +47,11 @@ def init_db():
 init_db()
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+    mime_type, _ = mimetypes.guess_type(filename)
+    return mime_type == 'audio/mpeg' and '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+def allowed_image(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'jpg', 'jpeg', 'png', 'gif'}
 
 @app.route('/')
 def index():
@@ -50,11 +64,13 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        hashed_password = generate_password_hash(password)
+
         role = request.form.get('role', 'user')  # Default to 'user' if role is not provided
 
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
-            cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (username, password, role))
+            cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (username, hashed_password, role))
             conn.commit()
 
         flash('Registration successful! Please login.')
@@ -70,13 +86,13 @@ def login():
 
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
-            cursor.execute('SELECT id, role FROM users WHERE username = ? AND password = ?', (username, password))
+            cursor.execute('SELECT id, password, role FROM users WHERE username = ?', (username,))
             user = cursor.fetchone()
 
-        if user:
+        if user and check_password_hash(user[1], password):  # Check hashed password
             session['username'] = username
             session['user_id'] = user[0]  # Store user ID
-            session['role'] = user[1]     # Store user role
+            session['role'] = user[2]     # Store user role
             return redirect(url_for('index'))
         else:
             flash('Invalid username or password')
@@ -126,9 +142,6 @@ def upload():
 
     return render_template('upload.html')
 
-def allowed_image(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'jpg', 'jpeg', 'png', 'gif'}
-
 @app.route('/player')
 def player():
     if 'username' not in session:
@@ -164,7 +177,7 @@ def delete_song(song_id):
             if os.path.exists(filepath):
                 os.remove(filepath)
 
-            # Delete the song from the database because duh
+            # Delete the song from the database
             cursor.execute('DELETE FROM songs WHERE id = ?', (song_id,))
             conn.commit()
             flash('Song deleted successfully.')
@@ -198,7 +211,6 @@ def promote_user(user_id):
     flash('User promoted to moderator.')
     return redirect(url_for('manage_users'))
 
-
 @app.route('/manage_users')
 def manage_users():
     if 'username' not in session or session.get('role') != 'moderator':
@@ -210,7 +222,6 @@ def manage_users():
         users = cursor.fetchall()
 
     return render_template('manage_users.html', users=users)
-
 
 if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
