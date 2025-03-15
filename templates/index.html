@@ -1,6 +1,49 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="display-4">Welcome to the Music App!</h1>
-    <p class="lead">Upload and play your favorite songs.</p>
+    <h1 class="display-4">About This Music App</h1>
+    <p class="lead">Welcome to the Music App, your go-to platform for uploading, managing, and enjoying your favorite music!</p>
+
+    <section class="app-features">
+        <h2>Features</h2>
+        <ul>
+            <li><strong>Upload Your Songs:</strong> Share your favorite songs with the world by uploading MP3 files. Easily add song titles, artists, and even upload album covers.</li>
+            <li><strong>Play Your Music:</strong> After uploading, you can instantly listen to your songs and enjoy your collection of music.</li>
+            <li><strong>Manage Your Songs:</strong> Edit song details, upload new thumbnails, or delete songs you no longer want to keep.</li>
+            <li><strong>User Roles:</strong> We have different roles, including <strong>User</strong> and <strong>Moderator</strong>, each with specific permissions. Moderators can manage user submissions and moderate content.</li>
+            <li><strong>Collaborate with Others:</strong> Connect with other users through your shared music collection, discover new songs, and explore the music library!</li>
+        </ul>
+    </section>
+
+    <section class="how-to-use">
+        <h2>How to Use the App</h2>
+        <ol>
+            <li><strong>Sign Up:</strong> Create an account to get started. Choose your role as either a regular user or, if you’re an admin, as a moderator.</li>
+            <li><strong>Upload Songs:</strong> Navigate to the upload page and choose MP3 files to upload. Optionally, you can add a song thumbnail.</li>
+            <li><strong>Play Your Music:</strong> Visit your music collection to listen to your uploaded songs anytime!</li>
+            <li><strong>Edit or Delete:</strong> You can edit the song details or remove songs that you no longer wish to keep.</li>
+            <li><strong>Manage Content (For Moderators):</strong> If you're a moderator, you have the ability to approve, edit, or remove songs uploaded by other users.</li>
+        </ol>
+    </section>
+
+    <section class="social-media">
+        <h2>Connect with Us</h2>
+        <p>Follow us on social media or reach out through our channels for updates, support, and news:</p>
+        <ul class="social-links">
+            <li><a href="https://twitter.com/YourAppHandle" target="_blank" class="social-icon">Twitter</a></li>
+            <li><a href="https://facebook.com/YourAppPage" target="_blank" class="social-icon">Facebook</a></li>
+            <li><a href="https://instagram.com/YourAppHandle" target="_blank" class="social-icon">Instagram</a></li>
+            <li><a href="https://youtube.com/YourAppChannel" target="_blank" class="social-icon">YouTube</a></li>
+        </ul>
+    </section>
+
+    <section class="source-code">
+        <h2>Source Code</h2>
+        <p>This app is open-source! You can view and contribute to the source code on GitHub:</p>
+        <a href="https://github.com/Virus01Official/HopOnMusic" target="_blank" class="btn btn-primary">View Source Code on GitHub</a>
+    </section>
+
+    <footer>
+        <p>© 2025 Moonwave Studios - All Rights Reserved.</p>
+    </footer>
 {% endblock %}
