@@ -1,7 +1,7 @@
 :root {
-    --primary-color: #1db954; /* Spotify green */
+    --primary-color: #1db954; 
     --accent-color: #1ed760;
-    --background-color: #121212; /* Deeper dark background */
+    --background-color: #121212; 
     --text-color: #ffffff;
     --subtext-color: #b3b3b3;
     --card-background: #181818;
@@ -11,7 +11,6 @@
     --transition-speed: 0.3s;
 }
 
-/* General Styling */
 body {
     background-color: var(--background-color);
     color: var(--text-color);
@@ -37,7 +36,6 @@ body {
     background-color: #222222;
 }
 
-/* Audio Player Container */
 .audio-player {
     background-color: var(--card-background);
     border: 1px solid var(--card-border);
@@ -53,13 +51,11 @@ body {
     transform: translateY(-2px);
 }
 
-/* Audio Element Styles */
 audio {
     width: 100%;
     margin-top: 10px;
 }
 
-/* WebKit Audio Controls Customization */
 audio::-webkit-media-controls-panel {
     background-color: var(--card-background);
     border-radius: 12px;
@@ -96,7 +92,6 @@ audio::-webkit-media-controls-volume-slider {
     border-radius: 6px;
 }
 
-/* Extra Styling for Alerts / UI Elements */
 .alert-info {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
@@ -107,7 +102,6 @@ audio::-webkit-media-controls-volume-slider {
     font-weight: 500;
 }
 
-/* Smooth Transition Utility */
 * {
     transition: background-color var(--transition-speed), color var(--transition-speed), border-color var(--transition-speed);
 }
