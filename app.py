@@ -118,6 +118,10 @@ def logout():
     session.pop('profile_picture', None)
     return redirect(url_for('login'))
 
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html'), 404
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if 'username' not in session:

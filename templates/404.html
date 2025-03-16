@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}404 - Page Not Found{% endblock %}
+
+{% block content %}
+    <div class="text-center py-5">
+        <h1 class="display-1 text-danger fw-bold">404</h1>
+        <h2 class="text-warning mb-4">Oops! The page you're looking for doesn't exist.</h2>
+        <p class="lead text-light mb-4">Sorry, we can't find the page you're trying to reach. It may have been moved or deleted.</p>
+        
+        <a href="{{ url_for('index') }}" class="btn btn-success btn-lg">Go Back to Home</a>
+        
+        <div class="mt-5">
+            <img src="https://via.placeholder.com/400x300?text=404+Error" alt="404 Error" class="img-fluid rounded-3 shadow-lg">
+        </div>
+    </div>
+{% endblock %}
