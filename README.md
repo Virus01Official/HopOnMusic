@@ -22,7 +22,3 @@ Example:
     --card-border: #555; /* Darker card border */
     --font-family: 'Roboto', sans-serif; /* Custom font */
 }
-```
-
-## Our to-do list
-you can find our to-do list [here](https://github.com/users/Virus01Official/projects/19)
