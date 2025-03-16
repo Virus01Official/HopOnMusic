@@ -301,6 +301,58 @@ def update_profile_picture():
 
     return render_template('update_profile_picture.html')
 
+@app.route('/profile')
+def profile():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT title, artist, filename, thumbnail FROM songs WHERE user_id = ?', (session['user_id'],))
+        user_songs = cursor.fetchall()
+        song_count = len(user_songs)
+
+    return render_template('profile.html',
+                           username=session['username'],
+                           role=session.get('role', 'user'),
+                           profile_picture=session.get('profile_picture'),
+                           songs=user_songs,
+                           song_count=song_count)
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+def edit_profile():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        new_username = request.form['username']
+        current_password = request.form['current_password']
+        new_password = request.form.get('new_password')
+
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT password FROM users WHERE id = ?', (session['user_id'],))
+            db_password = cursor.fetchone()[0]
+
+            if check_password_hash(db_password, current_password):
+                if new_username:
+                    cursor.execute('UPDATE users SET username = ? WHERE id = ?', (new_username, session['user_id']))
+                    session['username'] = new_username
+
+                if new_password:
+                    hashed_new_password = generate_password_hash(new_password)
+                    cursor.execute('UPDATE users SET password = ? WHERE id = ?', (hashed_new_password, session['user_id']))
+
+                conn.commit()
+                flash('Profile updated successfully.')
+                return redirect(url_for('profile'))
+            else:
+                flash('Current password is incorrect.')
+
+    return render_template('edit_profile.html', current_username=session['username'])
+
+
+
 @app.route('/manage_users')
 def manage_users():
     if 'username' not in session or session.get('role') != 'moderator':

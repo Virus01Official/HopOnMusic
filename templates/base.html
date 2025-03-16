@@ -59,7 +59,10 @@
                 {% if 'username' in session %}
                     <div class="d-flex align-items-center">
                         {% if session['profile_picture'] %}
-                            <img src="{{ url_for('static', filename='uploads/' + session['profile_picture']) }}" alt="Profile Picture" class="rounded-circle me-2" style="width: 40px; height: 40px;">
+                        <a href="{{ url_for('profile') }}">
+                            <img src="{{ url_for('static', filename='uploads/' ~ session.profile_picture) }}"
+                                 alt="Profile" width="50" style="border-radius: 50%;">
+                        </a>
                         {% else %}
                             <div class="rounded-circle me-2 bg-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                                 <span class="text-light">👤</span>

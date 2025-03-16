@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - HopOn Music{% endblock %}
+
+{% block content %}
+<div class="card bg-secondary bg-opacity-10 border-0 shadow-sm rounded-4 p-4">
+    <div class="row align-items-center">
+        <div class="col-md-3 text-center mb-3 mb-md-0">
+            {% if profile_picture %}
+                <img src="{{ url_for('static', filename='uploads/' ~ profile_picture) }}" alt="Profile Picture" class="img-fluid rounded-circle shadow-sm" style="max-width: 150px;">
+            {% else %}
+                <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
+                    <span class="fs-1 text-light">👤</span>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-9">
+            <h2 class="text-success fw-semibold mb-2">{{ username }}</h2>
+            <p class="text-light mb-1"><strong>Role:</strong> {{ role | capitalize }}</p>
+            <p class="text-light mb-3"><strong>Total Songs Uploaded:</strong> {{ song_count }}</p>
+            <a href="{{ url_for('update_profile_picture') }}" class="btn btn-outline-light btn-sm me-2">Change Profile Picture</a>
+            <a href="{{ url_for('edit_profile') }}" class="btn btn-success btn-sm">Edit Profile Info</a>
+        </div>
+    </div>
+</div>
+
+<hr class="my-4 border-light">
+
+<h4 class="fw-semibold mb-3 text-light">Your Uploaded Songs</h4>
+{% if songs %}
+    <div class="row g-3">
+        {% for song in songs %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card bg-dark text-light border-secondary h-100 shadow-sm rounded-4">
+                    {% if song[3] %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ song[3]) }}" class="card-img-top rounded-top-4" alt="Thumbnail">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title mb-1 text-light">{{ song[0] }}</h5>
+                        <p class="card-text text-light small mb-0">By {{ song[1] }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-light">You haven't uploaded any songs yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile - HopOn Music{% endblock %}
+
+{% block content %}
+<div class="card bg-secondary bg-opacity-10 border-0 shadow-sm rounded-4 p-4">
+    <h3 class="mb-4 fw-semibold text-success">Edit Profile Info</h3>
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label text-light">New Username</label>
+            <input type="text" name="username" class="form-control bg-dark text-light border-secondary" value="{{ current_username }}">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label text-light">Current Password <span class="text-danger">*</span></label>
+            <input type="password" name="current_password" class="form-control bg-dark text-light border-secondary" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label text-light">New Password <small class="text-muted">(leave blank to keep current)</small></label>
+            <input type="password" name="new_password" class="form-control bg-dark text-light border-secondary">
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <a href="{{ url_for('profile') }}" class="btn btn-outline-light me-2">Cancel</a>
+            <button type="submit" class="btn btn-success">Save Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

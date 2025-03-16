@@ -312,3 +312,7 @@ ul li, ol li {
 .social-icon:hover {
     color: #007bff;  /* Change to desired hover color */
 }
+
+.text-muted {
+    color: #bbb !important; /* Or a brighter shade like #ccc */
+}
