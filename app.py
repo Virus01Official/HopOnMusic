@@ -122,6 +122,10 @@ def logout():
 def page_not_found(error):
     return render_template('404.html'), 404
 
+@app.route('/terms-of-service')
+def terms_of_service():
+    return render_template('tos.html')
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if 'username' not in session:
