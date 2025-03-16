@@ -27,3 +27,7 @@ Example:
 ## our to-do list
 
 you can find our to-do list [here](https://github.com/users/Virus01Official/projects/19)
+
+## documentations
+
+[self-hosted](https://github.com/Virus01Official/HoM-self-hosting) allows you to host Hopon Music yourself
