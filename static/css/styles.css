@@ -14,8 +14,8 @@
     --button-hover-bg: #282828; /* Darker background on hover */
     --drop-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* More pronounced drop shadow */
     /* Input field specific variables */
-    --input-focus-border: #1db954; /* Same as primary for consistency */
-    --input-focus-shadow: 0 0 0 0.2rem rgba(29, 185, 84, 0.25);
+    --input-focus-border: #b91da4; /* Same as primary for consistency */
+    --input-focus-shadow: 0 0 0 0.2rem rgba(167, 29, 185, 0.25);
 }
 
 /* General Styling */
@@ -70,7 +70,7 @@ a:hover {
 }
 
 .btn-primary:hover {
-    box-shadow: 0 0 15px rgba(29, 185, 84, 0.7);
+    box-shadow: 0 0 15px rgba(149, 29, 185, 0.7);
     background-color: var(--accent-color);
 }
 
