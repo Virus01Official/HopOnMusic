@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Update Profile Picture - HopOn Music{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark text-light border-secondary mt-5">
+                <div class="card-header bg-secondary text-light">
+                    <h4 class="card-title mb-0">Update Profile Picture</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Current Profile Picture -->
+                    <div class="text-center mb-4">
+                        {% if session['profile_picture'] %}
+                            <img src="{{ url_for('static', filename='uploads/' + session['profile_picture']) }}" 
+                                 alt="Current Profile Picture" 
+                                 class="rounded-circle mb-3" 
+                                 style="width: 150px; height: 150px; object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto mb-3" 
+                                 style="width: 150px; height: 150px;">
+                                <span class="text-light" style="font-size: 4rem;">👤</span>
+                            </div>
+                        {% endif %}
+                        <p class="text-muted">Current Profile Picture</p>
+                    </div>
+
+                    <!-- Update Form -->
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="profile_picture" class="form-label">Upload New Profile Picture</label>
+                            <input class="form-control bg-dark text-light border-secondary" 
+                                   type="file" 
+                                   id="profile_picture" 
+                                   name="profile_picture" 
+                                   accept="image/*" 
+                                   required>
+                            <small class="form-text text-muted">Allowed formats: JPG, JPEG, PNG, GIF. Max size: 5MB.</small>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">Update Profile Picture</button>
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

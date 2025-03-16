@@ -2,16 +2,18 @@
 
 {% block content %}
     <h1 class="display-4">Register</h1>
-    <form method="POST" class="mb-3">
-        <div class="mb-3">
-            <label for="username" class="form-label">Username:</label>
-            <input type="text" id="username" name="username" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password:</label>
-            <input type="password" id="password" name="password" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Register</button>
-    </form>
+    <!-- templates/register.html -->
+<form method="POST" enctype="multipart/form-data">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    
+    <label for="profile_picture">Profile Picture:</label>
+    <input type="file" id="profile_picture" name="profile_picture">
+    
+    <button type="submit">Register</button>
+</form>
     <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
 {% endblock %}

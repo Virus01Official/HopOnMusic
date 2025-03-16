@@ -18,6 +18,7 @@ app.config['UPLOAD_FOLDER'] = 'static/songs'
 app.config['ALLOWED_EXTENSIONS'] = {'mp3'}
 app.config['SESSION_COOKIE_SECURE'] = True  # Secure cookies for HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JS access to cookies
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # Database initialization
 def init_db():
@@ -28,7 +29,8 @@ def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL,
                 password TEXT NOT NULL,
-                role TEXT NOT NULL DEFAULT 'user'
+                role TEXT NOT NULL DEFAULT 'user',
+                profile_picture TEXT  -- New column for profile picture
             )
         ''')
         cursor.execute('''
@@ -65,12 +67,20 @@ def register():
         username = request.form['username']
         password = request.form['password']
         hashed_password = generate_password_hash(password)
+        profile_picture = request.files['profile_picture']
 
         role = request.form.get('role', 'user')  # Default to 'user' if role is not provided
 
+        profile_picture_filename = None
+        if profile_picture and allowed_image(profile_picture.filename):
+            profile_picture_filename = secure_filename(profile_picture.filename)
+            profile_picture_path = os.path.join(app.config['UPLOAD_FOLDER'], profile_picture_filename)
+            profile_picture.save(profile_picture_path)
+
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
-            cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (username, hashed_password, role))
+            cursor.execute('INSERT INTO users (username, password, role, profile_picture) VALUES (?, ?, ?, ?)',
+                          (username, hashed_password, role, profile_picture_filename))
             conn.commit()
 
         flash('Registration successful! Please login.')
@@ -86,13 +96,14 @@ def login():
 
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
-            cursor.execute('SELECT id, password, role FROM users WHERE username = ?', (username,))
+            cursor.execute('SELECT id, password, role, profile_picture FROM users WHERE username = ?', (username,))
             user = cursor.fetchone()
 
         if user and check_password_hash(user[1], password):  # Check hashed password
             session['username'] = username
             session['user_id'] = user[0]  # Store user ID
             session['role'] = user[2]     # Store user role
+            session['profile_picture'] = user[3]  # Store profile picture filename
             return redirect(url_for('index'))
         else:
             flash('Invalid username or password')
@@ -104,6 +115,7 @@ def logout():
     session.pop('username', None)
     session.pop('user_id', None)
     session.pop('role', None)
+    session.pop('profile_picture', None)
     return redirect(url_for('login'))
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -254,6 +266,32 @@ def edit_song(song_id):
 
     return render_template('edit_song.html', song=song)
 
+@app.route('/update_profile_picture', methods=['GET', 'POST'])
+def update_profile_picture():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        profile_picture = request.files['profile_picture']
+
+        if profile_picture and allowed_image(profile_picture.filename):
+            profile_picture_filename = secure_filename(profile_picture.filename)
+            profile_picture_path = os.path.join(app.config['UPLOAD_FOLDER'], profile_picture_filename)
+            profile_picture.save(profile_picture_path)
+
+            with sqlite3.connect('database.db') as conn:
+                cursor = conn.cursor()
+                cursor.execute('UPDATE users SET profile_picture = ? WHERE id = ?',
+                              (profile_picture_filename, session['user_id']))
+                conn.commit()
+
+            session['profile_picture'] = profile_picture_filename
+            flash('Profile picture updated successfully!')
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.')
+
+    return render_template('update_profile_picture.html')
 
 @app.route('/manage_users')
 def manage_users():

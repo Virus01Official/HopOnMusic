@@ -3,3 +3,4 @@
 database.db
 promote_users.py
 static/songs/*
+static/uploads/*

@@ -39,6 +39,9 @@
                         </li>
                         {% endif %}
                         <li class="nav-item">
+                            <a class="nav-link text-light" href="{{ url_for('update_profile_picture') }}">Update Profile Picture</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-light" href="{{ url_for('logout') }}">Logout</a>
                         </li>
                     {% else %}
@@ -51,7 +54,16 @@
                     {% endif %}
                 </ul>
                 {% if 'username' in session %}
-                    <span class="navbar-text text-muted">Welcome, <strong>{{ session['username'] }}</strong>!</span>
+                    <div class="d-flex align-items-center">
+                        {% if session['profile_picture'] %}
+                            <img src="{{ url_for('static', filename='uploads/' + session['profile_picture']) }}" alt="Profile Picture" class="rounded-circle me-2" style="width: 40px; height: 40px;">
+                        {% else %}
+                            <div class="rounded-circle me-2 bg-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <span class="text-light">👤</span>
+                            </div>
+                        {% endif %}
+                        <span class="navbar-text text-muted">Welcome, <strong>{{ session['username'] }}</strong>!</span>
+                    </div>
                 {% endif %}
             </div>
         </div>
