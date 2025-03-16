@@ -53,4 +53,4 @@ Example:
 ```
 
 ## Our to-do list
-you can find our to-do list [here](https://github.com/users/Virus01Official/projects/19))
+you can find our to-do list [here](https://github.com/users/Virus01Official/projects/19)
