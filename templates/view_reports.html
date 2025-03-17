@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}View Reports{% endblock %}
+{% block content %}
+<h3 class="mb-4">Reported Songs</h3>
+<div class="table-responsive">
+    <table class="table table-dark table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Song Title</th>
+                <th>Reported By</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Update Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td>{{ report[0] }}</td>
+                <td>{{ report[1] }}</td>
+                <td>{{ report[2] }}</td>
+                <td>{{ report[3] }}</td>
+                <td>{{ report[4] }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('update_report_status', report_id=report[0]) }}">
+                        <select name="status" class="form-select form-select-sm d-inline w-auto me-2">
+                            <option value="Pending" {% if report[4]=='Pending' %}selected{% endif %}>Pending</option>
+                            <option value="Reviewed" {% if report[4]=='Reviewed' %}selected{% endif %}>Reviewed</option>
+                            <option value="Resolved" {% if report[4]=='Resolved' %}selected{% endif %}>Resolved</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-success">Update</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

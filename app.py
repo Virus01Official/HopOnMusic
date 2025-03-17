@@ -44,6 +44,19 @@ def init_db():
                 FOREIGN KEY (user_id) REFERENCES users (id)
             )
         ''')
+
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS reports (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            song_id INTEGER NOT NULL,
+            reporter_id INTEGER NOT NULL,
+            reason TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (song_id) REFERENCES songs(id),
+            FOREIGN KEY (reporter_id) REFERENCES users(id)
+            )
+        ''')
+
         conn.commit()
 
 init_db()
@@ -351,7 +364,75 @@ def edit_profile():
 
     return render_template('edit_profile.html', current_username=session['username'])
 
+@app.route('/moderator/reports')
+def view_reports():
+    if 'username' not in session or session.get('role') != 'moderator':
+        return redirect(url_for('login'))
 
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT reports.id, reports.reason, reports.timestamp,
+                   users.username AS reporter, songs.title, songs.id AS song_id
+            FROM reports
+            JOIN users ON reports.reporter_id = users.id
+            JOIN songs ON reports.song_id = songs.id
+        ''')
+        reports = cursor.fetchall()
+
+    return render_template('view_reports.html', reports=reports)
+
+@app.route('/delete_report/<int:report_id>', methods=['POST'])
+def delete_report(report_id):
+    if 'username' not in session or session.get('role') != 'moderator':
+        return redirect(url_for('login'))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM reports WHERE id = ?', (report_id,))
+        conn.commit()
+
+    flash('Report deleted successfully.')
+    return redirect(url_for('view_reports'))
+
+@app.route('/report_song/<int:song_id>', methods=['GET', 'POST'])
+def report_song(song_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        reason = request.form['reason']
+        reporter_id = session['user_id']  # Use the logged-in user's ID
+
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            try:
+                cursor.execute('''
+                    INSERT INTO reports (song_id, reporter_id, reason)
+                    VALUES (?, ?, ?)
+                ''', (song_id, reporter_id, reason))
+                conn.commit()
+                flash('Song reported successfully.')
+            except sqlite3.IntegrityError as e:
+                flash(f'Error: {e}')
+
+        return redirect(url_for('player'))
+
+    return render_template('report_song.html', song_id=song_id)
+
+@app.route('/update_report_status/<int:report_id>', methods=['POST'])
+def update_report_status(report_id):
+    if 'username' not in session or session.get('role') != 'moderator':
+        return redirect(url_for('login'))
+
+    new_status = request.form['status']
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('UPDATE reports SET status = ? WHERE id = ?', (new_status, report_id))
+        conn.commit()
+
+    flash('Report status updated.')
+    return redirect(url_for('view_reports'))
 
 @app.route('/manage_users')
 def manage_users():

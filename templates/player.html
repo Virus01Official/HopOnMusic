@@ -26,7 +26,11 @@
                         <form action="{{ url_for('edit_song', song_id=song[0]) }}" method="GET" class="mt-2 d-inline">
                             <button type="submit" class="btn btn-warning btn-sm">Edit</button>
                         </form>
-                                                 
+
+                        <form action="{{ url_for('report_song', song_id=song[0]) }}" method="POST" class="mt-2 d-inline">
+                            <input type="hidden" name="reason" value="Inappropriate content">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Report</button>
+                        </form>                                         
                         {% endif %}
                     </div>
                 </div>

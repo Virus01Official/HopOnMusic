@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Report Song{% endblock %}
+{% block content %}
+<div class="card bg-secondary text-light shadow p-4">
+    <h3 class="mb-4">Report Song</h3>
+    <form method="POST">
+        <div class="mb-3">
+            <label for="reason" class="form-label">Reason for Reporting:</label>
+            <textarea class="form-control" name="reason" id="reason" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-danger">Submit Report</button>
+        <a href="{{ url_for('player') }}" class="btn btn-outline-light ms-2">Cancel</a>
+    </form>
+</div>
+{% endblock %}
