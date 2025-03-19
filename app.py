@@ -450,6 +450,35 @@ def manage_users():
 
     return render_template('manage_users.html', users=users)
 
+@app.route('/user/<int:user_id>')
+def user_profile(user_id):
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT username, profile_picture, role FROM users WHERE id = ?', (user_id,))
+        user = cursor.fetchone()
+
+        if not user:
+            return render_template('404.html'), 404
+
+        cursor.execute('SELECT title, artist, filename, thumbnail FROM songs WHERE user_id = ?', (user_id,))
+        user_songs = cursor.fetchall()
+
+    return render_template('user_profile.html',
+                           username=user[0],
+                           profile_picture=user[1],
+                           role=user[2],
+                           songs=user_songs)
+
+@app.context_processor
+def utility_processor():
+    def get_username(user_id):
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT username FROM users WHERE id = ?', (user_id,))
+            user = cursor.fetchone()
+            return user[0] if user else "Unknown User"
+    return dict(get_username=get_username)
+
 if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
