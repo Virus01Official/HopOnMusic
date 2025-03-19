@@ -10,7 +10,7 @@
                     {% if song[4] %}
                         <img src="{{ url_for('static', filename='songs/' + song[4]) }}" class="card-img-top" alt="{{ song[1] }}">
                     {% else %}
-                        <img src="{{ url_for('static', filename='songs/default-thumbnail.jpg') }}" class="card-img-top" alt="Default Thumbnail">
+                        <img src="{{ url_for('static', filename='songs/default-thumbnail.png') }}" class="card-img-top" alt="Default Thumbnail">
                     {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ song[1] }}</h5>

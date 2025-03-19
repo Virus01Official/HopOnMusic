@@ -3,4 +3,5 @@
 database.db
 promote_users.py
 static/songs/*
+!static/songs/default-thumbnail.png
 static/uploads/*
