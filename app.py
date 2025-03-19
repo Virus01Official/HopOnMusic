@@ -139,6 +139,10 @@ def page_not_found(error):
 def terms_of_service():
     return render_template('tos.html')
 
+@app.route('/privacy-policy')
+def privacy_policy():
+    return render_template('privacy_policy.html')
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if 'username' not in session:
