@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 import sqlite3
 import os
 from werkzeug.utils import secure_filename
@@ -54,6 +54,25 @@ def init_db():
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (song_id) REFERENCES songs(id),
             FOREIGN KEY (reporter_id) REFERENCES users(id)
+            )
+        ''')
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS playlists (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                user_id INTEGER NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )
+        ''')
+
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS playlist_songs (
+                playlist_id INTEGER,
+                song_id INTEGER,
+                PRIMARY KEY (playlist_id, song_id),
+                FOREIGN KEY (playlist_id) REFERENCES playlists(id),
+                FOREIGN KEY (song_id) REFERENCES songs(id)
             )
         ''')
 
@@ -478,6 +497,97 @@ def utility_processor():
             user = cursor.fetchone()
             return user[0] if user else "Unknown User"
     return dict(get_username=get_username)
+
+@app.route('/remove_from_playlist/<int:playlist_id>/<int:song_id>', methods=['POST'])
+def remove_from_playlist(playlist_id, song_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM playlist_songs WHERE playlist_id = ? AND song_id = ?', (playlist_id, song_id))
+        conn.commit()
+
+    flash('Song removed from playlist.')
+    return redirect(url_for('view_playlist', playlist_id=playlist_id))
+
+@app.route('/add_to_playlist/<int:song_id>', methods=['GET', 'POST'])
+def add_to_playlist(song_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT id, name FROM playlists WHERE user_id = ?', (session['user_id'],))
+        playlists = cursor.fetchall()
+
+    if request.method == 'POST':
+        playlist_id = int(request.form['playlist_id'])
+
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('INSERT OR IGNORE INTO playlist_songs (playlist_id, song_id) VALUES (?, ?)',
+                           (playlist_id, song_id))
+            conn.commit()
+            flash('Song added to playlist.')
+        return redirect(url_for('player'))
+
+    return render_template('add_to_playlist.html', playlists=playlists, song_id=song_id)
+
+@app.route('/playlist/<int:playlist_id>')
+def view_playlist(playlist_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT name FROM playlists WHERE id = ?', (playlist_id,))
+        playlist = cursor.fetchone()
+
+        if not playlist:
+            flash("Playlist not found.")
+            return redirect(url_for('my_playlists'))
+
+        cursor.execute('''
+            SELECT songs.id, songs.title, songs.artist, songs.filename, songs.thumbnail
+            FROM playlist_songs
+            JOIN songs ON playlist_songs.song_id = songs.id
+            WHERE playlist_songs.playlist_id = ?
+        ''', (playlist_id,))
+        songs = cursor.fetchall()
+
+    return render_template('playlist.html', playlist_name=playlist[0], songs=songs)
+
+@app.route('/my_playlists')
+def my_playlists():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT id, name FROM playlists WHERE user_id = ?', (session['user_id'],))
+        playlists = cursor.fetchall()
+
+    return render_template('my_playlists.html', playlists=playlists)
+
+@app.route('/create_playlist', methods=['GET', 'POST'])
+def create_playlist():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        name = request.form['name']
+        user_id = session['user_id']
+
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('INSERT INTO playlists (name, user_id) VALUES (?, ?)', (name, user_id))
+            conn.commit()
+
+        flash('Playlist created successfully!')
+        return redirect(url_for('my_playlists'))
+
+    return render_template('create_playlist.html')
 
 if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):

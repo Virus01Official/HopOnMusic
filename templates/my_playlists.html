@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}My Playlists - HopOn Music{% endblock %}
+
+{% block content %}
+    <div class="card bg-secondary text-light shadow-lg p-4 rounded-4">
+        <h2 class="mb-4">Your Playlists</h2>
+        <ul class="list-group">
+            {% for playlist in playlists %}
+                <li class="list-group-item bg-dark text-light d-flex justify-content-between align-items-center">
+                    <a href="{{ url_for('view_playlist', playlist_id=playlist[0]) }}" class="text-decoration-none text-success fw-semibold">
+                        {{ playlist[1] }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="mt-4">
+            <a href="{{ url_for('create_playlist') }}" class="btn btn-success">Create New Playlist</a>
+            <a href="{{ url_for('player') }}" class="btn btn-outline-light ms-2">Back to Player</a>
+        </div>
+    </div>
+{% endblock %}
