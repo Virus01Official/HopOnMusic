@@ -1,6 +1,8 @@
 # HopOnMusic
 A Music streaming platform
 
+![example](http://github.com/Virus01Official/HopOnMusic/ReadMeStuff/image.png)
+
 ## Customizing the Theme
 
 To customize the app's appearance, edit the `static/custom.css` file. You can override the following CSS variables:
