@@ -1,7 +1,9 @@
 # HopOnMusic
 A Music streaming platform
 
-![example](http://github.com/Virus01Official/HopOnMusic/ReadMeStuff/image.png)
+<p align="center">
+  <img width="500" alt="example" src="ReadMeStuff/image.png">
+</p>
 
 ## Customizing the Theme
 
