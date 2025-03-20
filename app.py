@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import mimetypes
 from dotenv import load_dotenv
+import gunicorn
 
 # Load environment variables from .env file
 load_dotenv()
