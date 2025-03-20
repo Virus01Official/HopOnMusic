@@ -48,7 +48,9 @@
                         </form>
                         
                         <form action="{{ url_for('add_to_playlist', song_id=song[0]) }}" method="GET" class="mt-2 d-inline">
-                            <button type="submit" class="btn btn-success btn-sm">Add to Playlist</button>
+                            <button type="submit" class="btn btn-success btn-sm" title="Add to Playlist">
+                                <i class="fas fa-heart"></i> <!-- Heart icon -->
+                            </button>
                         </form>
                         {% endif %}
                     </div>
@@ -90,7 +92,9 @@
                         </form>      
                         
                         <form action="{{ url_for('add_to_playlist', song_id=song[0]) }}" method="GET" class="mt-2 d-inline">
-                            <button type="submit" class="btn btn-success btn-sm">Add to Playlist</button>
+                            <button type="submit" class="btn btn-success btn-sm" title="Add to Playlist">
+                                <i class="fas fa-heart"></i> <!-- Heart icon -->
+                            </button>
                         </form>
                         {% endif %}
                     </div>
