@@ -2,7 +2,7 @@
 A Music streaming platform
 
 <p align="center">
-  <img width="500" alt="example" src="ReadMeStuff/image.png">
+  <img alt="example" src="ReadMeStuff/image.png">
 </p>
 
 ## Customizing the Theme
