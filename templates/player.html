@@ -45,7 +45,11 @@
                         <form action="{{ url_for('report_song', song_id=song[0]) }}" method="POST" class="mt-2 d-inline">
                             <input type="hidden" name="reason" value="Inappropriate content">
                             <button type="submit" class="btn btn-outline-danger btn-sm">Report</button>
-                        </form>                                         
+                        </form>
+                        
+                        <form action="{{ url_for('add_to_playlist', song_id=song[0]) }}" method="GET" class="mt-2 d-inline">
+                            <button type="submit" class="btn btn-success btn-sm">Add to Playlist</button>
+                        </form>
                         {% endif %}
                     </div>
                 </div>
@@ -83,7 +87,11 @@
                         <form action="{{ url_for('report_song', song_id=song[0]) }}" method="POST" class="mt-2 d-inline">
                             <input type="hidden" name="reason" value="Inappropriate content">
                             <button type="submit" class="btn btn-outline-danger btn-sm">Report</button>
-                        </form>                                         
+                        </form>      
+                        
+                        <form action="{{ url_for('add_to_playlist', song_id=song[0]) }}" method="GET" class="mt-2 d-inline">
+                            <button type="submit" class="btn btn-success btn-sm">Add to Playlist</button>
+                        </form>
                         {% endif %}
                     </div>
                 </div>

@@ -1,16 +1,18 @@
+<!-- add_to_playlist.html -->
 {% extends "base.html" %}
-{% block title %}Create Playlist - HopOn Music{% endblock %}
 
 {% block content %}
-    <div class="card bg-secondary text-light shadow-lg p-4 rounded-4">
-        <h2 class="mb-4">Create New Playlist</h2>
-        <form method="POST">
-            <div class="mb-3">
-                <label for="name" class="form-label">Playlist Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
-            </div>
-            <button type="submit" class="btn btn-success">Create Playlist</button>
-            <a href="{{ url_for('player') }}" class="btn btn-outline-light ms-2">Back to Player</a>
-        </form>
-    </div>
+    <h1 class="display-4">Add to Playlist</h1>
+    <form method="POST" action="{{ url_for('add_to_playlist', song_id=song_id) }}">
+        <div class="form-group">
+            <label for="playlist_id">Select Playlist</label>
+            <select class="form-control" id="playlist_id" name="playlist_id">
+                {% for playlist in playlists %}
+                    <option value="{{ playlist[0] }}">{{ playlist[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Add to Playlist</button>
+    </form>
+    <a href="{{ url_for('player') }}" class="btn btn-secondary mt-3">Back to Player</a>
 {% endblock %}

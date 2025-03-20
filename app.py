@@ -18,7 +18,6 @@ app.config['UPLOAD_FOLDER'] = 'static/songs'
 app.config['ALLOWED_EXTENSIONS'] = {'mp3'}
 app.config['SESSION_COOKIE_SECURE'] = True  # Secure cookies for HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JS access to cookies
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # Database initialization
 def init_db():
