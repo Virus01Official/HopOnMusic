@@ -205,10 +205,13 @@ def player():
 
     with sqlite3.connect('database.db') as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT id, title, artist, filename, thumbnail, user_id FROM songs')
-        songs = cursor.fetchall()
+        cursor.execute('SELECT id, title, artist, filename, thumbnail, user_id FROM songs ORDER BY id DESC LIMIT 5')
+        featured_songs = cursor.fetchall()
 
-    return render_template('player.html', songs=songs)
+        cursor.execute('SELECT id, title, artist, filename, thumbnail, user_id FROM songs')
+        all_songs = cursor.fetchall()
+
+    return render_template('player.html', songs=all_songs, featured_songs=featured_songs)
 
 @app.route('/delete_song/<int:song_id>', methods=['POST'])
 def delete_song(song_id):
@@ -588,6 +591,42 @@ def create_playlist():
         return redirect(url_for('my_playlists'))
 
     return render_template('create_playlist.html')
+
+@app.route('/search')
+def search():
+    query = request.args.get('query', '').strip()
+    if not query:
+        return redirect(url_for('player'))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT id, title, artist, filename, thumbnail, user_id 
+            FROM songs 
+            WHERE title LIKE ? OR artist LIKE ?
+        ''', (f'%{query}%', f'%{query}%'))
+        results = cursor.fetchall()
+
+    return render_template('player.html', songs=results)
+
+@app.route('/recommended')
+def recommended():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT songs.id, songs.title, songs.artist, songs.filename, songs.thumbnail, songs.user_id
+            FROM songs
+            JOIN playlist_songs ON songs.id = playlist_songs.song_id
+            GROUP BY songs.id
+            ORDER BY COUNT(playlist_songs.playlist_id) DESC
+            LIMIT 5
+        ''')
+        recommended_songs = cursor.fetchall()
+
+    return render_template('recommended.html', recommended_songs=recommended_songs)
 
 if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):

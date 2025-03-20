@@ -1,0 +1,42 @@
+<!-- recommended.html -->
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="display-4">Recommended for You</h1>
+    <div class="row">
+        {% for song in recommended_songs %}
+            <div class="col-md-4 mb-4">
+                <div class="card bg-secondary text-light">
+                    {% if song[4] %}
+                        <img src="{{ url_for('static', filename='songs/' + song[4]) }}" class="card-img-top" alt="{{ song[1] }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='songs/default-thumbnail.png') }}" class="card-img-top" alt="Default Thumbnail">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ song[1] }}</h5>
+                        <p class="card-text">{{ song[2] }}</p>
+                        <p>Uploaded by: <a href="{{ url_for('user_profile', user_id=song[5]) }}">{{ get_username(song[5]) }}</a></p>
+                        <audio controls class="w-100">
+                            <source src="{{ url_for('static', filename='songs/' + song[3]) }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                        {% if session['user_id'] == song[5] or session['role'] == 'moderator' %}
+                        <form action="{{ url_for('delete_song', song_id=song[0]) }}" method="POST" class="mt-2 d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm mr-2">Delete</button> <!-- Added margin-right -->
+                        </form>
+                        <form action="{{ url_for('edit_song', song_id=song[0]) }}" method="GET" class="mt-2 d-inline">
+                            <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                        </form>
+
+                        <form action="{{ url_for('report_song', song_id=song[0]) }}" method="POST" class="mt-2 d-inline">
+                            <input type="hidden" name="reason" value="Inappropriate content">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Report</button>
+                        </form>                                         
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Home</a>
+{% endblock %}

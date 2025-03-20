@@ -39,9 +39,6 @@
                         </li>
                         {% endif %}
                         <li class="nav-item">
-                            <a class="nav-link text-light" href="{{ url_for('update_profile_picture') }}">Update Profile Picture</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-light" href="{{ url_for('terms_of_service') }}">Terms of Service</a>
                         </li>
                         <li class="nav-item">
@@ -58,16 +55,23 @@
                 </ul>
                 {% if 'username' in session %}
                     <div class="d-flex align-items-center">
-                        {% if session['profile_picture'] %}
-                        <a href="{{ url_for('profile') }}">
-                            <img src="{{ url_for('static', filename='uploads/' ~ session.profile_picture) }}"
-                                 alt="Profile" width="50" style="border-radius: 50%;">
-                        </a>
-                        {% else %}
-                            <div class="rounded-circle me-2 bg-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                <span class="text-light">👤</span>
-                            </div>
-                        {% endif %}
+                        <div class="dropdown">
+                            {% if session['profile_picture'] %}
+                            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                                <img src="{{ url_for('static', filename='uploads/' ~ session.profile_picture) }}"
+                                     alt="Profile" width="50" style="border-radius: 50%;">
+                            </a>
+                            {% else %}
+                                <div class="rounded-circle me-2 bg-secondary d-flex align-items-center justify-content-center dropdown-toggle" style="width: 40px; height: 40px;" data-bs-toggle="dropdown">
+                                    <span class="text-light">👤</span>
+                                </div>
+                            {% endif %}
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ url_for('edit_profile') }}">Edit Profile</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('my_playlists') }}">Playlists</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('recommended') }}">Recommended for You</a></li>
+                            </ul>
+                        </div>
                         <span class="navbar-text text-muted">Welcome, <strong>{{ session['username'] }}</strong>!</span>
                     </div>
                 {% endif %}
