@@ -351,27 +351,38 @@ def profile():
 
     with sqlite3.connect('database.db') as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT title, artist, filename, thumbnail FROM songs WHERE user_id = ?', (session['user_id'],))
-        user_songs = cursor.fetchall()
-        song_count = len(user_songs)
         
-        # Get customization data with proper defaults
-        cursor.execute('SELECT accent_color, font_style, bio, custom_css FROM users WHERE id = ?', (session['user_id'],))
+        # Get user's songs
+        cursor.execute('''
+            SELECT title, artist, filename, thumbnail 
+            FROM songs 
+            WHERE user_id = ?
+            ORDER BY id DESC
+        ''', (session['user_id'],))
+        songs = cursor.fetchall()
+        song_count = len(songs)
+        
+        # Get customization data
+        cursor.execute('''
+            SELECT accent_color, font_style, bio, custom_css 
+            FROM users 
+            WHERE id = ?
+        ''', (session['user_id'],))
         customization_data = cursor.fetchone()
-        
-        # Handle case where columns might not exist yet
-        customization = {
-            'accent_color': customization_data[0] if customization_data and customization_data[0] else '#6366f1',
-            'font_style': customization_data[1] if customization_data and customization_data[1] else 'Arial',
-            'bio': customization_data[2] if customization_data and customization_data[2] else '',
-            'custom_css': customization_data[3] if customization_data and customization_data[3] else ''
-        }
+
+    # Prepare customization dictionary with defaults
+    customization = {
+        'accent_color': customization_data[0] if customization_data else '#6366f1',
+        'font_style': customization_data[1] if customization_data else 'Arial',
+        'bio': customization_data[2] if customization_data else '',
+        'custom_css': customization_data[3] if customization_data else ''
+    }
 
     return render_template('profile.html',
                          username=session['username'],
                          role=session.get('role', 'user'),
                          profile_picture=session.get('profile_picture'),
-                         songs=user_songs,
+                         songs=songs,  # This is the list of songs
                          song_count=song_count,
                          customization=customization)
 
@@ -651,6 +662,9 @@ def customize_profile():
         return redirect(url_for('login'))
 
     if request.method == 'POST':
+        print("\n\n=== FORM DATA RECEIVED ===")  # Debug
+        print(request.form)  # Debug
+        
         accent_color = request.form.get('accent_color', '#6366f1')
         font_style = request.form.get('font_style', 'Arial')
         bio = request.form.get('bio', '')
@@ -658,19 +672,31 @@ def customize_profile():
 
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
-            cursor.execute('''
-                UPDATE users SET 
-                accent_color = ?,
-                font_style = ?,
-                bio = ?,
-                custom_css = ?
-                WHERE id = ?
-            ''', (accent_color, font_style, bio, custom_css, session['user_id']))
-            conn.commit()
+            try:
+                cursor.execute('''
+                    UPDATE users SET 
+                    accent_color = ?,
+                    font_style = ?,
+                    bio = ?,
+                    custom_css = ?
+                    WHERE id = ?
+                ''', (accent_color, font_style, bio, custom_css, session['user_id']))
+                conn.commit()
+                print("\n=== DATABASE UPDATE SUCCESSFUL ===")  # Debug
+                print(f"Updated values: {accent_color}, {font_style}, {bio}, {custom_css}")  # Debug
+            except Exception as e:
+                print("\n=== DATABASE ERROR ===")  # Debug
+                print(str(e))  # Debug
+                conn.rollback()
 
-        # Update session with new values
-        session['accent_color'] = accent_color
-        session['font_style'] = font_style
+        # Verify the update worked
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT accent_color, font_style, bio, custom_css FROM users WHERE id = ?', (session['user_id'],))
+            updated = cursor.fetchone()
+            print("\n=== VERIFICATION QUERY ===")  # Debug
+            print(updated)  # Debug
+
         flash('Profile customization saved!')
         return redirect(url_for('profile'))
 
