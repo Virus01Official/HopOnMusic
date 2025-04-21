@@ -30,11 +30,7 @@ def init_db():
                 username TEXT NOT NULL,
                 password TEXT NOT NULL,
                 role TEXT NOT NULL DEFAULT 'user',
-                profile_picture TEXT,
-                accent_color TEXT DEFAULT '#3498db',
-                font_style TEXT DEFAULT 'Arial',
-                bio TEXT DEFAULT '',
-                custom_css TEXT DEFAULT ''
+                profile_picture TEXT  -- New column for profile picture
             )
         ''')
         cursor.execute('''
@@ -351,40 +347,16 @@ def profile():
 
     with sqlite3.connect('database.db') as conn:
         cursor = conn.cursor()
-        
-        # Get user's songs
-        cursor.execute('''
-            SELECT title, artist, filename, thumbnail 
-            FROM songs 
-            WHERE user_id = ?
-            ORDER BY id DESC
-        ''', (session['user_id'],))
-        songs = cursor.fetchall()
-        song_count = len(songs)
-        
-        # Get customization data
-        cursor.execute('''
-            SELECT accent_color, font_style, bio, custom_css 
-            FROM users 
-            WHERE id = ?
-        ''', (session['user_id'],))
-        customization_data = cursor.fetchone()
-
-    # Prepare customization dictionary with defaults
-    customization = {
-        'accent_color': customization_data[0] if customization_data else '#6366f1',
-        'font_style': customization_data[1] if customization_data else 'Arial',
-        'bio': customization_data[2] if customization_data else '',
-        'custom_css': customization_data[3] if customization_data else ''
-    }
+        cursor.execute('SELECT title, artist, filename, thumbnail FROM songs WHERE user_id = ?', (session['user_id'],))
+        user_songs = cursor.fetchall()
+        song_count = len(user_songs)
 
     return render_template('profile.html',
-                         username=session['username'],
-                         role=session.get('role', 'user'),
-                         profile_picture=session.get('profile_picture'),
-                         songs=songs,  # This is the list of songs
-                         song_count=song_count,
-                         customization=customization)
+                           username=session['username'],
+                           role=session.get('role', 'user'),
+                           profile_picture=session.get('profile_picture'),
+                           songs=user_songs,
+                           song_count=song_count)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
@@ -655,106 +627,6 @@ def recommended():
         recommended_songs = cursor.fetchall()
 
     return render_template('recommended.html', recommended_songs=recommended_songs)
-
-@app.route('/customize_profile', methods=['GET', 'POST'])
-def customize_profile():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    if request.method == 'POST':
-        print("\n\n=== FORM DATA RECEIVED ===")  # Debug
-        print(request.form)  # Debug
-        
-        accent_color = request.form.get('accent_color', '#6366f1')
-        font_style = request.form.get('font_style', 'Arial')
-        bio = request.form.get('bio', '')
-        custom_css = request.form.get('custom_css', '')
-
-        with sqlite3.connect('database.db') as conn:
-            cursor = conn.cursor()
-            try:
-                cursor.execute('''
-                    UPDATE users SET 
-                    accent_color = ?,
-                    font_style = ?,
-                    bio = ?,
-                    custom_css = ?
-                    WHERE id = ?
-                ''', (accent_color, font_style, bio, custom_css, session['user_id']))
-                conn.commit()
-                print("\n=== DATABASE UPDATE SUCCESSFUL ===")  # Debug
-                print(f"Updated values: {accent_color}, {font_style}, {bio}, {custom_css}")  # Debug
-            except Exception as e:
-                print("\n=== DATABASE ERROR ===")  # Debug
-                print(str(e))  # Debug
-                conn.rollback()
-
-        # Verify the update worked
-        with sqlite3.connect('database.db') as conn:
-            cursor = conn.cursor()
-            cursor.execute('SELECT accent_color, font_style, bio, custom_css FROM users WHERE id = ?', (session['user_id'],))
-            updated = cursor.fetchone()
-            print("\n=== VERIFICATION QUERY ===")  # Debug
-            print(updated)  # Debug
-
-        flash('Profile customization saved!')
-        return redirect(url_for('profile'))
-
-    # GET request - show form
-    with sqlite3.connect('database.db') as conn:
-        cursor = conn.cursor()
-        cursor.execute('''
-            SELECT accent_color, font_style, bio, custom_css 
-            FROM users WHERE id = ?
-        ''', (session['user_id'],))
-        customization_data = cursor.fetchone()
-
-    customization = {
-        'accent_color': customization_data[0] if customization_data else '#6366f1',
-        'font_style': customization_data[1] if customization_data else 'Arial',
-        'bio': customization_data[2] if customization_data else '',
-        'custom_css': customization_data[3] if customization_data else ''
-    }
-
-    font_options = [
-        'Arial', 'Verdana', 'Helvetica', 'Tahoma',
-        'Trebuchet MS', 'Times New Roman', 'Georgia',
-        'Garamond', 'Courier New', 'Brush Script MT'
-    ]
-
-    return render_template('customize_profile.html',
-                         customization=customization,
-                         font_options=font_options)
-
-def migrate_database():
-    with sqlite3.connect('database.db') as conn:
-        cursor = conn.cursor()
-        
-        # Check if columns exist
-        cursor.execute("PRAGMA table_info(users)")
-        columns = [column[1] for column in cursor.fetchall()]
-        
-        # Add missing columns
-        if 'accent_color' not in columns:
-            cursor.execute('ALTER TABLE users ADD COLUMN accent_color TEXT DEFAULT "#3498db"')
-        if 'font_style' not in columns:
-            cursor.execute('ALTER TABLE users ADD COLUMN font_style TEXT DEFAULT "Arial"')
-        if 'bio' not in columns:
-            cursor.execute('ALTER TABLE users ADD COLUMN bio TEXT DEFAULT ""')
-        if 'custom_css' not in columns:
-            cursor.execute('ALTER TABLE users ADD COLUMN custom_css TEXT DEFAULT ""')
-        
-        conn.commit()
-
-@app.route('/debug-routes')
-def debug_routes():
-    import urllib.parse
-    output = []
-    for rule in app.url_map.iter_rules():
-        methods = ','.join(rule.methods)
-        line = urllib.parse.unquote(f"{rule.endpoint:50s} {methods:20s} {rule}")
-        output.append(line)
-    return '<pre>' + '\n'.join(sorted(output)) + '</pre>'
 
 if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
