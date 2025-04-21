@@ -316,3 +316,26 @@ ul li, ol li {
 .text-muted {
     color: #bbb !important; /* Or a brighter shade like #ccc */
 }
+
+.profile-accent {
+    color: {{ customization.accent_color if customization and customization.accent_color else '#6366f1' }};
+}
+
+.profile-font {
+    font-family: '{{ customization.font_style if customization and customization.font_style else "Arial" }}', sans-serif;
+}
+
+.btn-primary {
+    background-color: {{ customization.accent_color if customization and customization.accent_color else '#6366f1' }};
+    border-color: {{ customization.accent_color if customization and customization.accent_color else '#6366f1' }};
+}
+
+.btn-outline-primary {
+    color: {{ customization.accent_color if customization and customization.accent_color else '#6366f1' }};
+    border-color: {{ customization.accent_color if customization and customization.accent_color else '#6366f1' }};
+}
+
+.btn-outline-primary:hover {
+    background-color: {{ customization.accent_color if customization and customization.accent_color else '#6366f1' }};
+    color: #fff;
+}

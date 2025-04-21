@@ -350,13 +350,23 @@ def profile():
         cursor.execute('SELECT title, artist, filename, thumbnail FROM songs WHERE user_id = ?', (session['user_id'],))
         user_songs = cursor.fetchall()
         song_count = len(user_songs)
+        
+        # Get customization data
+        cursor.execute('SELECT accent_color, font_style, bio, custom_css FROM users WHERE id = ?', (session['user_id'],))
+        customization = cursor.fetchone()
 
     return render_template('profile.html',
-                           username=session['username'],
-                           role=session.get('role', 'user'),
-                           profile_picture=session.get('profile_picture'),
-                           songs=user_songs,
-                           song_count=song_count)
+                         username=session['username'],
+                         role=session.get('role', 'user'),
+                         profile_picture=session.get('profile_picture'),
+                         songs=user_songs,
+                         song_count=song_count,
+                         customization={
+                             'accent_color': customization[0] if customization else None,
+                             'font_style': customization[1] if customization else None,
+                             'bio': customization[2] if customization else None,
+                             'custom_css': customization[3] if customization else None
+                         })
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
