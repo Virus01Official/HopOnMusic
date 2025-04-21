@@ -1,8 +1,35 @@
 {% extends "base.html" %}
 
-<a href="{{ url_for('customize_profile') }}" class="btn btn-outline-primary btn-sm">
-    <i class="fas fa-palette me-1"></i> Customize
-</a>
+{% block head %}
+<style>
+    /* Dynamic styles based on user customization */
+    .profile-accent {
+        color: {{ customization.accent_color if customization.accent_color else '#6366f1' }};
+    }
+    
+    .profile-font {
+        font-family: '{{ customization.font_style if customization.font_style else "Arial" }}', sans-serif;
+    }
+    
+    .btn-primary {
+        background-color: {{ customization.accent_color if customization.accent_color else '#6366f1' }};
+        border-color: {{ customization.accent_color if customization.accent_color else '#6366f1' }};
+    }
+    
+    .btn-outline-primary {
+        color: {{ customization.accent_color if customization.accent_color else '#6366f1' }};
+        border-color: {{ customization.accent_color if customization.accent_color else '#6366f1' }};
+    }
+    
+    .btn-outline-primary:hover {
+        background-color: {{ customization.accent_color if customization.accent_color else '#6366f1' }};
+        color: #fff;
+    }
+    
+    /* Custom CSS from user */
+    {{ customization.custom_css if customization.custom_css else '' }}
+</style>
+{% endblock %}
 
 {% block title %}Profile - HopOn Music{% endblock %}
 
@@ -12,10 +39,10 @@
         <div class="col-md-3 text-center mb-3 mb-md-0">
             {% if profile_picture %}
                 <img src="{{ url_for('static', filename='uploads/' ~ profile_picture) }}" alt="Profile Picture" 
-                    class="img-fluid rounded-circle shadow-sm" style="max-width: 150px; border: 3px solid {{ customization.accent_color if customization and customization.accent_color else '#6366f1' }}">
+                    class="img-fluid rounded-circle shadow-sm" style="max-width: 150px; border: 3px solid {{ customization.accent_color if customization.accent_color else '#6366f1' }};">
             {% else %}
                 <div class="rounded-circle d-flex align-items-center justify-content-center" 
-                     style="width: 150px; height: 150px; background-color: {{ customization.accent_color if customization and customization.accent_color else '#6366f1' }}; opacity: 0.8;">
+                     style="width: 150px; height: 150px; background-color: {{ customization.accent_color if customization.accent_color else '#6366f1' }}; opacity: 0.8;">
                     <span class="fs-1 text-light">👤</span>
                 </div>
             {% endif %}
@@ -23,7 +50,7 @@
         <div class="col-md-9">
             <h2 class="fw-semibold mb-2 profile-accent">{{ username }}</h2>
             
-            {% if customization and customization.bio %}
+            {% if customization.bio %}
             <p class="text-light mb-3">{{ customization.bio }}</p>
             {% endif %}
             
@@ -72,7 +99,7 @@
                              style="height: 180px; object-fit: cover;">
                     {% else %}
                         <div class="bg-secondary d-flex align-items-center justify-content-center rounded-top-4" 
-                             style="height: 180px; background-color: '{{ customization.accent_color if customization and customization.accent_color else '#6366f1' }}'; opacity: 0.7;">
+                             style="height: 180px; background-color: {{ customization.accent_color if customization.accent_color else '#6366f1' }}; opacity: 0.7;">
                             <i class="fas fa-music fa-3x text-light"></i>
                         </div>
                     {% endif %}
@@ -91,7 +118,7 @@
     </div>
 {% else %}
     <div class="text-center py-5">
-        <i class="fas fa-music fa-4x mb-3" style="color: {{ customization.accent_color if customization and customization.accent_color else '#6366f1' }};"></i>
+        <i class="fas fa-music fa-4x mb-3" style="color: {{ customization.accent_color if customization.accent_color else '#6366f1' }};"></i>
         <h5 class="text-light profile-font">No songs uploaded yet</h5>
         <p class="text-light profile-font">Share your music with the community!</p>
         <a href="{{ url_for('upload') }}" class="btn btn-primary mt-2">

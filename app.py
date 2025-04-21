@@ -651,13 +651,11 @@ def customize_profile():
         return redirect(url_for('login'))
 
     if request.method == 'POST':
-        # Get form data
         accent_color = request.form.get('accent_color', '#6366f1')
         font_style = request.form.get('font_style', 'Arial')
         bio = request.form.get('bio', '')
         custom_css = request.form.get('custom_css', '')
 
-        # Update database
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
             cursor.execute('''
@@ -670,6 +668,9 @@ def customize_profile():
             ''', (accent_color, font_style, bio, custom_css, session['user_id']))
             conn.commit()
 
+        # Update session with new values
+        session['accent_color'] = accent_color
+        session['font_style'] = font_style
         flash('Profile customization saved!')
         return redirect(url_for('profile'))
 
@@ -680,9 +681,15 @@ def customize_profile():
             SELECT accent_color, font_style, bio, custom_css 
             FROM users WHERE id = ?
         ''', (session['user_id'],))
-        customization = cursor.fetchone()
+        customization_data = cursor.fetchone()
 
-    # Font options for dropdown
+    customization = {
+        'accent_color': customization_data[0] if customization_data else '#6366f1',
+        'font_style': customization_data[1] if customization_data else 'Arial',
+        'bio': customization_data[2] if customization_data else '',
+        'custom_css': customization_data[3] if customization_data else ''
+    }
+
     font_options = [
         'Arial', 'Verdana', 'Helvetica', 'Tahoma',
         'Trebuchet MS', 'Times New Roman', 'Georgia',
