@@ -16,6 +16,7 @@ app = Flask(__name__)
 # Load configurations from environment variables
 app.secret_key = os.getenv('SECRET_KEY', 'default_secret_key')
 app.config['UPLOAD_FOLDER'] = 'static/songs'
+app.config['UPLOAD_FOLDER_PFP'] = 'uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'mp3'}
 app.config['SESSION_COOKIE_SECURE'] = True  # Secure cookies for HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JS access to cookies
@@ -106,7 +107,7 @@ def register():
         profile_picture_filename = None
         if profile_picture and allowed_image(profile_picture.filename):
             profile_picture_filename = secure_filename(profile_picture.filename)
-            profile_picture_path = os.path.join(app.config['UPLOAD_FOLDER'], profile_picture_filename)
+            profile_picture_path = os.path.join(app.config['UPLOAD_FOLDER_PFP'], profile_picture_filename)
             profile_picture.save(profile_picture_path)
 
         with sqlite3.connect('database.db') as conn:
@@ -631,5 +632,7 @@ def recommended():
 if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
+    if not os.path.exists(app.config['UPLOAD_FOLDER_PFP']):
+        os.makedirs(app.config['UPLOAD_FOLDER_PFP'])
 
     app.run(debug=True)
