@@ -3,6 +3,29 @@
 {% block title %}Profile - HopOn Music{% endblock %}
 
 {% block content %}
+<style>
+    body {
+        font-family: {{ customization[0] | default('Arial') }};
+        background-color: {{ customization[2] | default('#FFFFFF') }};
+        color: {{ customization[1] | default('#000000') }};
+    }
+
+    .btn-primary {
+        background-color: {{ customization[1] | default('#000000') }};
+        border-color: {{ customization[1] | default('#000000') }};
+    }
+
+    .btn-primary:hover {
+        background-color: {{ customization[1] | default('#333333') }};
+        border-color: {{ customization[1] | default('#333333') }};
+    }
+
+    .card {
+        background-color: {{ customization[2] | default('#FFFFFF') }};
+        color: {{ customization[1] | default('#000000') }};
+    }
+</style>
+
 <div class="card bg-secondary bg-opacity-10 border-0 shadow-sm rounded-4 p-4">
     <div class="row align-items-center">
         <div class="col-md-3 text-center mb-3 mb-md-0">
@@ -20,6 +43,7 @@
             <p class="text-light mb-3"><strong>Total Songs Uploaded:</strong> {{ song_count }}</p>
             <a href="{{ url_for('update_profile_picture') }}" class="btn btn-outline-light btn-sm me-2">Change Profile Picture</a>
             <a href="{{ url_for('edit_profile') }}" class="btn btn-primary btn-sm">Edit Profile Info</a>
+            <a href="{{ url_for('customize_profile') }}" class="btn btn-secondary btn-sm">Customize Profile</a>
         </div>
     </div>
 </div>

@@ -25,27 +25,50 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JS access to cookies
 def init_db():
     with sqlite3.connect('database.db') as conn:
         cursor = conn.cursor()
+        # Create or update the users table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL,
                 password TEXT NOT NULL,
                 role TEXT NOT NULL DEFAULT 'user',
-                profile_picture TEXT  -- New column for profile picture
+                profile_picture TEXT,
+                font TEXT,
+                accent_color TEXT,
+                background_color TEXT
             )
         ''')
+        
+        # Add missing columns if they don't exist
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN font TEXT')
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN accent_color TEXT')
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN background_color TEXT')
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+
+        # Create or update the songs table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS songs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
                 artist TEXT NOT NULL,
                 filename TEXT NOT NULL,
-                thumbnail TEXT,  -- New column for thumbnail
+                thumbnail TEXT,
                 user_id INTEGER,
                 FOREIGN KEY (user_id) REFERENCES users (id)
             )
         ''')
 
+        # Create or update the reports table
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS reports (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -58,6 +81,7 @@ def init_db():
             )
         ''')
 
+        # Create or update the playlists table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS playlists (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -67,6 +91,7 @@ def init_db():
             )
         ''')
 
+        # Create or update the playlist_songs table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS playlist_songs (
                 playlist_id INTEGER,
@@ -352,12 +377,16 @@ def profile():
         user_songs = cursor.fetchall()
         song_count = len(user_songs)
 
+        cursor.execute('SELECT font, accent_color, background_color FROM users WHERE id = ?', (session['user_id'],))
+        customization = cursor.fetchone()
+
     return render_template('profile.html',
                            username=session['username'],
                            role=session.get('role', 'user'),
                            profile_picture=session.get('profile_picture'),
                            songs=user_songs,
-                           song_count=song_count)
+                           song_count=song_count,
+                           customization=customization)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
@@ -628,6 +657,36 @@ def recommended():
         recommended_songs = cursor.fetchall()
 
     return render_template('recommended.html', recommended_songs=recommended_songs)
+
+@app.route('/customize_profile', methods=['GET', 'POST'])
+def customize_profile():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        font = request.form.get('font', 'Arial')
+        accent_color = request.form.get('accent_color', '#000000')
+        background_color = request.form.get('background_color', '#FFFFFF')
+
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                UPDATE users
+                SET font = ?, accent_color = ?, background_color = ?
+                WHERE id = ?
+            ''', (font, accent_color, background_color, session['user_id']))
+            conn.commit()
+
+        flash('Profile customization updated successfully!')
+        return redirect(url_for('profile'))
+
+    # Fetch current customization settings
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT font, accent_color, background_color FROM users WHERE id = ?', (session['user_id'],))
+        customization = cursor.fetchone()
+
+    return render_template('customize_profile.html', customization=customization)
 
 if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):

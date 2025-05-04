@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Customize Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Customize Your Profile</h1>
+    <form method="POST" class="p-4 bg-secondary rounded-3 shadow-sm">
+        <div class="mb-3">
+            <label for="font" class="form-label">Font:</label>
+            <select name="font" id="font" class="form-select">
+                <option value="Arial" {% if customization[0] == 'Arial' %}selected{% endif %}>Arial</option>
+                <option value="Verdana" {% if customization[0] == 'Verdana' %}selected{% endif %}>Verdana</option>
+                <option value="Times New Roman" {% if customization[0] == 'Times New Roman' %}selected{% endif %}>Times New Roman</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="accent_color" class="form-label">Accent Color:</label>
+            <input type="color" name="accent_color" id="accent_color" class="form-control form-control-color" value="{{ customization[1] }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="background_color" class="form-label">Background Color:</label>
+            <input type="color" name="background_color" id="background_color" class="form-control form-control-color" value="{{ customization[2] }}">
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Save Changes</button>
+    </form>
+</div>
+{% endblock %}
