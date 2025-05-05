@@ -17,7 +17,18 @@
         <div class="col-md-9">
             <h2 class="text fw-semibold mb-2">{{ username }}</h2>
             <p class="text-light mb-1"><strong>Role:</strong> {{ role | capitalize }}</p>
-            <p class="text-light mb-3"><strong>Total Songs Uploaded:</strong> {{ song_count }}</p>
+            <p class="text-light mb-1"><strong>Followers:</strong> {{ followers_count }}</p>
+            <p class="text-light mb-3"><strong>Following:</strong> {{ following_count }}</p>
+
+            {% if session.get('user_id') != user_id %}
+                <form method="POST" action="{{ url_for('follow_user', user_id=user_id) }}" style="display: inline;">
+                    {% if is_following %}
+                        <button type="submit" formaction="{{ url_for('unfollow_user', user_id=user_id) }}" class="btn btn-danger btn-sm">Unfollow</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-primary btn-sm">Follow</button>
+                    {% endif %}
+                </form>
+            {% endif %}
         </div>
     </div>
 </div>

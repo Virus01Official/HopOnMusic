@@ -102,6 +102,17 @@ def init_db():
             )
         ''')
 
+        # Create or update the followers table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS followers (
+                follower_id INTEGER NOT NULL,
+                followed_id INTEGER NOT NULL,
+                PRIMARY KEY (follower_id, followed_id),
+                FOREIGN KEY (follower_id) REFERENCES users (id),
+                FOREIGN KEY (followed_id) REFERENCES users (id)
+            )
+        ''')
+
         conn.commit()
 
 init_db()
@@ -515,11 +526,64 @@ def user_profile(user_id):
         cursor.execute('SELECT title, artist, filename, thumbnail FROM songs WHERE user_id = ?', (user_id,))
         user_songs = cursor.fetchall()
 
+        # Get followers and following counts
+        cursor.execute('SELECT COUNT(*) FROM followers WHERE followed_id = ?', (user_id,))
+        followers_count = cursor.fetchone()[0]
+
+        cursor.execute('SELECT COUNT(*) FROM followers WHERE follower_id = ?', (user_id,))
+        following_count = cursor.fetchone()[0]
+
+        # Check if the logged-in user is following this user
+        is_following = False
+        if 'user_id' in session:
+            cursor.execute('SELECT 1 FROM followers WHERE follower_id = ? AND followed_id = ?', (session['user_id'], user_id))
+            is_following = cursor.fetchone() is not None
+
     return render_template('user_profile.html',
                            username=user[0],
                            profile_picture=user[1],
                            role=user[2],
-                           songs=user_songs)
+                           songs=user_songs,
+                           followers_count=followers_count,
+                           following_count=following_count,
+                           is_following=is_following,
+                           user_id=user_id)
+
+@app.route('/follow/<int:user_id>', methods=['POST'])
+def follow_user(user_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    follower_id = session['user_id']
+    if follower_id == user_id:
+        flash("You cannot follow yourself.")
+        return redirect(url_for('user_profile', user_id=user_id))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        try:
+            cursor.execute('INSERT INTO followers (follower_id, followed_id) VALUES (?, ?)', (follower_id, user_id))
+            conn.commit()
+            flash("You are now following this user.")
+        except sqlite3.IntegrityError:
+            flash("You are already following this user.")
+
+    return redirect(url_for('user_profile', user_id=user_id))
+
+@app.route('/unfollow/<int:user_id>', methods=['POST'])
+def unfollow_user(user_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    follower_id = session['user_id']
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM followers WHERE follower_id = ? AND followed_id = ?', (follower_id, user_id))
+        conn.commit()
+
+    flash("You have unfollowed this user.")
+    return redirect(url_for('user_profile', user_id=user_id))
 
 @app.context_processor
 def utility_processor():
