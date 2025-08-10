@@ -1,18 +1,33 @@
-<!-- add_to_playlist.html -->
 {% extends "base.html" %}
 
+{% block title %}Create Playlist{% endblock %}
+
 {% block content %}
-    <h1 class="display-4">Add to Playlist</h1>
-    <form method="POST" action="{{ url_for('add_to_playlist', song_id=song_id) }}">
-        <div class="form-group">
-            <label for="playlist_id">Select Playlist</label>
-            <select class="form-control" id="playlist_id" name="playlist_id">
-                {% for playlist in playlists %}
-                    <option value="{{ playlist[0] }}">{{ playlist[1] }}</option>
-                {% endfor %}
-            </select>
+<div class="container mt-5">
+    <h2 class="text-success fw-bold mb-4">
+        <i class="fas fa-folder-plus"></i> Create New Playlist
+    </h2>
+
+    <form method="POST">
+        <div class="mb-4">
+            <label for="name" class="form-label">Playlist Name</label>
+            <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                class="form-control" 
+                placeholder="Enter playlist name" 
+                required>
         </div>
-        <button type="submit" class="btn btn-primary">Add to Playlist</button>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-check"></i> Create
+            </button>
+            <a href="{{ url_for('my_playlists') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Cancel
+            </a>
+        </div>
     </form>
-    <a href="{{ url_for('player') }}" class="btn btn-secondary mt-3">Back to Player</a>
+</div>
 {% endblock %}

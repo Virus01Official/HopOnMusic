@@ -672,6 +672,8 @@ def create_playlist():
     if 'username' not in session:
         return redirect(url_for('login'))
 
+    song_id = request.args.get('song_id')  # Get song_id from query params if present
+
     if request.method == 'POST':
         name = request.form['name']
         user_id = session['user_id']
@@ -679,12 +681,15 @@ def create_playlist():
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
             cursor.execute('INSERT INTO playlists (name, user_id) VALUES (?, ?)', (name, user_id))
+            playlist_id = cursor.lastrowid
+            if song_id:
+                cursor.execute('INSERT INTO playlist_songs (playlist_id, song_id) VALUES (?, ?)', (playlist_id, song_id))
             conn.commit()
 
         flash('Playlist created successfully!')
         return redirect(url_for('my_playlists'))
 
-    return render_template('create_playlist.html')
+    return render_template('create_playlist.html', song_id=song_id)
 
 @app.route('/search')
 def search():
