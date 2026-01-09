@@ -16,6 +16,8 @@ To customize the app's appearance, edit the `static/custom.css` file. You can ov
 - `--card-border`: The border color of cards.
 - `--font-family`: The font family used throughout the app.
 
+You can also use `templates/` to customize the elements in the UI, aka adding or removing stuff
+
 Example:
 ```css
 :root {
