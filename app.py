@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'default_secret_key')
 app.config['UPLOAD_FOLDER'] = 'static/songs'
 app.config['UPLOAD_FOLDER_PFP'] = 'static/uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'mp3'}
+app.config['ALLOWED_EXTENSIONS'] = {'mp3', "ogg", "wav"}
 app.config['SESSION_COOKIE_SECURE'] = True  # Secure cookies for HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JS access to cookies
 
