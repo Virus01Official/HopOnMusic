@@ -3,26 +3,208 @@
 
 {% block content %}
     <div class="card bg-secondary text-light shadow-lg p-4 rounded-4">
-        <h2 class="mb-4">Playlist: <span class="text-success">{{ playlist_name }}</span></h2>
+        <h2 class="mb-4">Playlist: <span style="color: #a31ed7;">{{ playlist_name }}</span></h2>
+        
         {% if songs %}
+            <!-- Player Controls -->
+            <div class="bg-dark p-3 rounded mb-4">
+                <h5 class="mb-3">Now Playing: <span id="nowPlayingTitle" style="color: #a31ed7;">-</span></h5>
+                
+                <!-- Audio Element -->
+                <audio id="playlistAudio" class="w-100 mb-3">
+                    <source id="audioSource" src="" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                
+                <!-- Player Controls -->
+                <div class="d-flex justify-content-center gap-3 mb-3 player-controls">
+                    <button id="prevBtn" class="btn btn-player-control btn-player-secondary">
+                        <i class="fas fa-step-backward"></i> Previous
+                    </button>
+                    <button id="playPausePlaylistBtn" class="btn btn-player-control btn-player-primary">
+                        <i class="fas fa-play"></i> Play
+                    </button>
+                    <button id="shuffleBtn" class="btn btn-player-control btn-player-secondary">
+                        <i class="fas fa-random"></i> Shuffle
+                    </button>
+                    <button id="nextBtn" class="btn btn-player-control btn-player-secondary">
+                        Next <i class="fas fa-step-forward"></i>
+                    </button>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="mb-2">
+                    <input type="range" id="progressBarPlaylist" class="form-range" min="0" max="100" value="0">
+                </div>
+                
+                <!-- Time and Volume -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span id="currentTimePlaylist">0:00</span> / <span id="durationPlaylist">0:00</span>
+                    </div>
+                    <div>
+                        <label for="volumeSliderPlaylist" class="me-2">Volume:</label>
+                        <input type="range" id="volumeSliderPlaylist" min="0" max="1" step="0.1" value="0.7" style="width: 100px;">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Songs List -->
+            <h5 class="mb-3">Songs in Playlist</h5>
             <ul class="list-group">
                 {% for song in songs %}
-                    <li class="list-group-item bg-dark text-light d-flex justify-content-between align-items-center">
+                    <li class="list-group-item bg-dark text-light d-flex justify-content-between align-items-center song-item" data-song-id="{{ song[0] }}" data-song-title="{{ song[1] }}" data-song-artist="{{ song[2] }}" data-song-file="{{ song[3] }}">
                         <div>
                             <strong>{{ song[1] }}</strong> by {{ song[2] }}
                         </div>
-                        <form action="{{ url_for('remove_from_playlist', playlist_id=request.view_args.playlist_id, song_id=song[0]) }}" method="POST">
-                            <button class="btn btn-sm btn-outline-danger">Remove</button>
-                        </form>
+                        <div>
+                            <button class="btn btn-sm btn-outline-success play-song-btn me-2" title="Play this song">▶️</button>
+                            <form action="{{ url_for('remove_from_playlist', playlist_id=request.view_args.playlist_id, song_id=song[0]) }}" method="POST" class="d-inline">
+                                <button class="btn btn-sm btn-outline-danger">Remove</button>
+                            </form>
+                        </div>
                     </li>
                 {% endfor %}
             </ul>
         {% else %}
             <p class="text-muted mt-3">No songs in this playlist yet.</p>
         {% endif %}
+        
         <div class="mt-4">
             <a href="{{ url_for('my_playlists') }}" class="btn btn-outline-light">Back to Playlists</a>
             <a href="{{ url_for('player') }}" class="btn btn-success ms-2">Back to Player</a>
         </div>
     </div>
+
+    <script>
+        const audio = document.getElementById('playlistAudio');
+        const playPauseBtn = document.getElementById('playPausePlaylistBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const progressBar = document.getElementById('progressBarPlaylist');
+        const currentTimeEl = document.getElementById('currentTimePlaylist');
+        const durationEl = document.getElementById('durationPlaylist');
+        const volumeSlider = document.getElementById('volumeSliderPlaylist');
+        const nowPlayingTitle = document.getElementById('nowPlayingTitle');
+        const audioSource = document.getElementById('audioSource');
+        
+        let playlist = [
+            {% for song in songs %}
+                { id: {{ song[0] }}, title: {{ song[1]|tojson }}, artist: {{ song[2]|tojson }}, file: {{ (url_for('static', filename='songs/' + song[3]))|tojson }} }{{ "," if not loop.last }}
+            {% endfor %}
+        ];
+        
+        let currentIndex = 0;
+        let isShuffled = false;
+        let shuffledPlaylist = [];
+        
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
+            return `${minutes}:${secs}`;
+        }
+        
+        function loadSong(index) {
+            if (playlist.length === 0) return;
+            currentIndex = Math.max(0, Math.min(index, playlist.length - 1));
+            const song = playlist[currentIndex];
+            audioSource.src = song.file;
+            nowPlayingTitle.textContent = `${song.title} by ${song.artist}`;
+            audio.load();
+        }
+        
+        function playSong() {
+            audio.play();
+            playPauseBtn.textContent = '⏸️ Pause';
+        }
+        
+        function pauseSong() {
+            audio.pause();
+            playPauseBtn.textContent = '▶️ Play';
+        }
+        
+        function togglePlayPause() {
+            if (audio.paused) {
+                playSong();
+            } else {
+                pauseSong();
+            }
+        }
+        
+        function nextSong() {
+            loadSong(currentIndex + 1);
+            playSong();
+        }
+        
+        function prevSong() {
+            loadSong(currentIndex - 1);
+            playSong();
+        }
+        
+        function toggleShuffle() {
+            isShuffled = !isShuffled;
+            shuffleBtn.classList.toggle('active');
+            
+            if (isShuffled) {
+                shuffledPlaylist = [...playlist].sort(() => Math.random() - 0.5);
+                playlist = shuffledPlaylist;
+                currentIndex = 0;
+                loadSong(0);
+                shuffleBtn.style.backgroundColor = '#17a2b8';
+                shuffleBtn.style.color = 'white';
+            } else {
+                // Restore original order
+                shuffledPlaylist = [];
+                location.reload(); // Reload to restore original order
+            }
+        }
+        
+        // Event Listeners
+        playPauseBtn.addEventListener('click', togglePlayPause);
+        nextBtn.addEventListener('click', nextSong);
+        prevBtn.addEventListener('click', prevSong);
+        shuffleBtn.addEventListener('click', toggleShuffle);
+        
+        // Volume control
+        volumeSlider.addEventListener('input', () => {
+            audio.volume = volumeSlider.value;
+        });
+        
+        // Progress bar update
+        audio.addEventListener('timeupdate', () => {
+            progressBar.value = (audio.currentTime / audio.duration) * 100;
+            currentTimeEl.textContent = formatTime(audio.currentTime);
+        });
+        
+        // Duration update
+        audio.addEventListener('loadedmetadata', () => {
+            durationEl.textContent = formatTime(audio.duration);
+        });
+        
+        // Progress bar seek
+        progressBar.addEventListener('input', () => {
+            audio.currentTime = (progressBar.value / 100) * audio.duration;
+        });
+        
+        // Auto-play next song when current ends
+        audio.addEventListener('ended', () => {
+            nextSong();
+        });
+        
+        // Play individual song from list
+        document.querySelectorAll('.play-song-btn').forEach((btn, index) => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                loadSong(index);
+                playSong();
+            });
+        });
+        
+        // Initialize with first song
+        if (playlist.length > 0) {
+            loadSong(0);
+        }
+    </script>
 {% endblock %}

@@ -316,3 +316,119 @@ ul li, ol li {
 .text-muted {
     color: #bbb !important; /* Or a brighter shade like #ccc */
 }
+
+/* Player Control Buttons */
+.player-controls {
+    padding: 15px 0;
+}
+
+.btn-player-control {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn-player-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: var(--text-color);
+}
+
+.btn-player-primary:hover {
+    background: linear-gradient(135deg, var(--accent-color), #c71ef5);
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(163, 30, 215, 0.5);
+}
+
+.btn-player-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-player-secondary {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-player-secondary:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(141, 29, 185, 0.4);
+}
+
+.btn-player-secondary:active {
+    transform: translateY(0);
+}
+
+.btn-player-control i {
+    font-size: 1.1em;
+}
+
+.btn-player-control:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Progress Bar Styling */
+.form-range {
+    height: 8px;
+}
+
+.form-range .form-range-track {
+    background-color: #404040;
+    border-radius: 4px;
+}
+
+.form-range::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) var(--value, 0%), #404040 var(--value, 0%), #404040 100%);
+    border-radius: 4px;
+    height: 8px;
+}
+
+.form-range::-moz-range-track {
+    background-color: #404040;
+    border-radius: 4px;
+    border: none;
+}
+
+.form-range::-moz-range-progress {
+    background-color: var(--primary-color);
+    border-radius: 4px;
+}
+
+.form-range::-webkit-slider-thumb {
+    background-color: var(--primary-color);
+    border: none;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    appearance: none;
+}
+
+.form-range::-moz-range-thumb {
+    background-color: var(--primary-color);
+    border: none;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+}
+
+.form-range::-webkit-slider-thumb:hover,
+.form-range::-moz-range-thumb:hover {
+    background-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(163, 30, 215, 0.6);
+    transform: scale(1.2);
+}
