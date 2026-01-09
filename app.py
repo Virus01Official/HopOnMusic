@@ -6,6 +6,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import mimetypes
 from dotenv import load_dotenv
 import gunicorn
+from google_auth_oauthlib.flow import Flow
+import google.auth.transport.requests
+import json
+from urllib.parse import urlencode
+import requests
 
 load_dotenv()
 
@@ -17,6 +22,11 @@ app.config['UPLOAD_FOLDER_PFP'] = 'static/uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'mp3', "ogg", "wav"}
 app.config['SESSION_COOKIE_SECURE'] = True  
 app.config['SESSION_COOKIE_HTTPONLY'] = True  
+
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
 
 # List of user IDs that automatically get moderator status
 MODERATOR_IDS = [int(id) for id in os.getenv('MODERATOR_IDS', '').split(',') if id.strip()] or [1]
@@ -72,6 +82,16 @@ def init_db():
 
         try:
             cursor.execute('ALTER TABLE users ADD COLUMN avatar_effect TEXT')
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN google_id TEXT UNIQUE')
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN google_email TEXT')
         except sqlite3.OperationalError:
             pass  # Column already exists
 
@@ -232,6 +252,126 @@ def logout():
     session.pop('role', None)
     session.pop('profile_picture', None)
     return redirect(url_for('login'))
+
+@app.route('/login/google')
+def google_login():
+    # Generate the authorization URL
+    authorization_url = f"https://accounts.google.com/o/oauth2/v2/auth?"
+    params = {
+        'client_id': GOOGLE_CLIENT_ID,
+        'redirect_uri': url_for('google_callback', _external=True),
+        'response_type': 'code',
+        'scope': 'openid email profile',
+        'access_type': 'offline',
+        'prompt': 'consent'
+    }
+    authorization_url += urlencode(params)
+    return redirect(authorization_url)
+
+@app.route('/login/google/callback')
+def google_callback():
+    code = request.args.get('code')
+    
+    if not code:
+        flash('Google login cancelled.')
+        return redirect(url_for('login'))
+    
+    try:
+        # Exchange code for tokens
+        token_url = 'https://oauth2.googleapis.com/token'
+        data = {
+            'code': code,
+            'client_id': GOOGLE_CLIENT_ID,
+            'client_secret': GOOGLE_CLIENT_SECRET,
+            'redirect_uri': url_for('google_callback', _external=True),
+            'grant_type': 'authorization_code'
+        }
+        
+        response = requests.post(token_url, data=data)
+        tokens = response.json()
+        
+        if 'error' in tokens:
+            flash('Failed to authenticate with Google.')
+            return redirect(url_for('login'))
+        
+        # Get user info
+        userinfo_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
+        headers = {'Authorization': f'Bearer {tokens["access_token"]}'}
+        userinfo_response = requests.get(userinfo_url, headers=headers)
+        user_info = userinfo_response.json()
+        
+        google_id = user_info.get('id')
+        email = user_info.get('email')
+        name = user_info.get('name', email.split('@')[0])
+        picture_url = user_info.get('picture')
+        
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            
+            # Check if user exists with this google_id
+            cursor.execute('SELECT id, username, role, profile_picture FROM users WHERE google_id = ?', (google_id,))
+            user = cursor.fetchone()
+            
+            if user:
+                # User exists, log them in
+                user_id = user[0]
+                username = user[1]
+            else:
+                # Create new user
+                # Generate unique username from email
+                base_username = email.split('@')[0]
+                username = base_username
+                counter = 1
+                
+                while True:
+                    cursor.execute('SELECT id FROM users WHERE username = ?', (username,))
+                    if not cursor.fetchone():
+                        break
+                    username = f"{base_username}{counter}"
+                    counter += 1
+                
+                # Download and save profile picture if available
+                profile_picture_filename = None
+                if picture_url:
+                    try:
+                        img_data = requests.get(picture_url).content
+                        profile_picture_filename = secure_filename(f"google_{google_id}.jpg")
+                        profile_picture_path = os.path.join(app.config['UPLOAD_FOLDER_PFP'], profile_picture_filename)
+                        with open(profile_picture_path, 'wb') as f:
+                            f.write(img_data)
+                    except:
+                        profile_picture_filename = None
+                
+                # Insert new user
+                cursor.execute(
+                    'INSERT INTO users (username, password, role, google_id, google_email, profile_picture) VALUES (?, ?, ?, ?, ?, ?)',
+                    (username, generate_password_hash('google_oauth'), 'user', google_id, email, profile_picture_filename)
+                )
+                conn.commit()
+                
+                # Get the new user ID
+                cursor.execute('SELECT id FROM users WHERE google_id = ?', (google_id,))
+                user_id = cursor.fetchone()[0]
+        
+        # Set session
+        session['username'] = username
+        session['user_id'] = user_id
+        session['role'] = user[2] if user else 'user'
+        session['profile_picture'] = user[3] if user else profile_picture_filename
+        
+        # Check if user ID is in moderator list and update role if needed
+        if user_id in MODERATOR_IDS:
+            with sqlite3.connect('database.db') as conn:
+                cursor = conn.cursor()
+                cursor.execute('UPDATE users SET role = ? WHERE id = ?', ('moderator', user_id))
+                conn.commit()
+            session['role'] = 'moderator'
+        
+        return redirect(url_for('index'))
+        
+    except Exception as e:
+        flash('An error occurred during Google authentication.')
+        return redirect(url_for('login'))
 
 @app.errorhandler(404)
 def page_not_found(error):

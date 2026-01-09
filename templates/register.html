@@ -24,6 +24,16 @@
                                 <button type="submit" class="btn btn-primary">Register</button>
                             </div>
                         </form>
+                        
+                        <div class="mt-4">
+                            <p class="text-center text-muted mb-3">Or register with:</p>
+                            <div class="d-grid gap-2">
+                                <a href="{{ url_for('google_login') }}" class="btn btn-outline-danger">
+                                    <i class="fab fa-google"></i> Sign up with Google
+                                </a>
+                            </div>
+                        </div>
+                        
                         <p class="text-center mt-3">Already have an account? <a href="{{ url_for('login') }}" class="text">Login here</a></p>
                     </div>
                 </div>
