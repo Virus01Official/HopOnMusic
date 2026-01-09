@@ -58,7 +58,7 @@
                             <strong>{{ song[1] }}</strong> by {{ song[2] }}
                         </div>
                         <div>
-                            <button class="btn btn-sm btn-outline-success play-song-btn me-2" title="Play this song">▶️</button>
+                            <button class="btn btn-sm btn-play-song play-song-btn me-2" title="Play this song"><i class="fas fa-play"></i></button>
                             <form action="{{ url_for('remove_from_playlist', playlist_id=request.view_args.playlist_id, song_id=song[0]) }}" method="POST" class="d-inline">
                                 <button class="btn btn-sm btn-outline-danger">Remove</button>
                             </form>
@@ -72,7 +72,7 @@
         
         <div class="mt-4">
             <a href="{{ url_for('my_playlists') }}" class="btn btn-outline-light">Back to Playlists</a>
-            <a href="{{ url_for('player') }}" class="btn btn-success ms-2">Back to Player</a>
+            <a href="{{ url_for('player') }}" class="btn btn-primary ms-2">Back to Player</a>
         </div>
     </div>
 
@@ -117,12 +117,12 @@
         
         function playSong() {
             audio.play();
-            playPauseBtn.textContent = '⏸️ Pause';
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
         }
         
         function pauseSong() {
             audio.pause();
-            playPauseBtn.textContent = '▶️ Play';
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i> Play';
         }
         
         function togglePlayPause() {
@@ -152,11 +152,11 @@
                 playlist = shuffledPlaylist;
                 currentIndex = 0;
                 loadSong(0);
-                shuffleBtn.style.backgroundColor = '#17a2b8';
-                shuffleBtn.style.color = 'white';
+                shuffleBtn.classList.add('shuffled');
             } else {
                 // Restore original order
                 shuffledPlaylist = [];
+                shuffleBtn.classList.remove('shuffled');
                 location.reload(); // Reload to restore original order
             }
         }

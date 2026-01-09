@@ -371,6 +371,11 @@ ul li, ol li {
     transform: translateY(0);
 }
 
+.btn-player-secondary.shuffled {
+    background-color: var(--primary-color);
+    border-color: var(--accent-color);
+}
+
 .btn-player-control i {
     font-size: 1.1em;
 }
@@ -378,6 +383,33 @@ ul li, ol li {
 .btn-player-control:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* Song Play Button */
+.btn-play-song {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-speed) ease;
+}
+
+.btn-play-song:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border-color: var(--accent-color);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(141, 29, 185, 0.4);
+}
+
+.btn-play-song:active {
+    transform: scale(0.95);
 }
 
 /* Progress Bar Styling */
