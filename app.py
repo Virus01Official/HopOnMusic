@@ -199,6 +199,10 @@ def terms_of_service():
 def privacy_policy():
     return render_template('privacy_policy.html')
 
+@app.route('/monetization')
+def monetization():
+    return render_template('monetization.html')
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if 'username' not in session:
