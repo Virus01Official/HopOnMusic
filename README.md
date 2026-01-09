@@ -18,6 +18,10 @@ To customize the app's appearance, edit the `static/custom.css` file. You can ov
 
 You can also use `templates/` to customize the elements in the UI, aka adding or removing stuff
 
+## Adding moderators
+
+make a `.env` file and add `MODERATOR_IDS=1,2,3` replace the 1,2,3 with your ids which are visible on your profile. 
+
 Example:
 ```css
 :root {
