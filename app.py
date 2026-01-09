@@ -7,19 +7,16 @@ import mimetypes
 from dotenv import load_dotenv
 import gunicorn
 
-# Load environment variables from .env file
 load_dotenv()
 
-# Initialize Flask app
 app = Flask(__name__)
 
-# Load configurations from environment variables
 app.secret_key = os.getenv('SECRET_KEY', 'default_secret_key')
 app.config['UPLOAD_FOLDER'] = 'static/songs'
 app.config['UPLOAD_FOLDER_PFP'] = 'static/uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'mp3', "ogg", "wav"}
-app.config['SESSION_COOKIE_SECURE'] = True  # Secure cookies for HTTPS
-app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JS access to cookies
+app.config['SESSION_COOKIE_SECURE'] = True  
+app.config['SESSION_COOKIE_HTTPONLY'] = True  
 
 # List of user IDs that automatically get moderator status
 MODERATOR_IDS = [int(id) for id in os.getenv('MODERATOR_IDS', '').split(',') if id.strip()] or [1]
