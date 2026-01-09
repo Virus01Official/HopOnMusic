@@ -1,7 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="display-4">Moderator Dashboard</h1>
+    <h1 class="display-4" style="color: #a31ed7;">Moderator Dashboard</h1>
+    
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <a href="{{ url_for('moderator_decorations') }}" class="card text-decoration-none h-100" style="background-color: #282828; border-color: #a31ed7; border: 2px solid;">
+                <div class="card-body text-light">
+                    <h5 class="card-title" style="color: #a31ed7;">
+                        <i class="fas fa-star"></i> Manage Decorations
+                    </h5>
+                    <p class="card-text text-muted">Create and manage custom avatar decorations</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 mb-3">
+            <a href="{{ url_for('view_reports') }}" class="card text-decoration-none h-100" style="background-color: #282828; border-color: #a31ed7; border: 2px solid;">
+                <div class="card-body text-light">
+                    <h5 class="card-title" style="color: #a31ed7;">
+                        <i class="fas fa-flag"></i> View Reports
+                    </h5>
+                    <p class="card-text text-muted">Review and handle user reports</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <h3 style="color: #a31ed7;" class="mt-5 mb-4">Recent Songs</h3>
     <div class="row">
         {% for song in songs %}
             <div class="col-md-4 mb-4">

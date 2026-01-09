@@ -21,6 +21,9 @@ app.config['ALLOWED_EXTENSIONS'] = {'mp3'}
 app.config['SESSION_COOKIE_SECURE'] = True  # Secure cookies for HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JS access to cookies
 
+# List of user IDs that automatically get moderator status
+MODERATOR_IDS = [int(id) for id in os.getenv('MODERATOR_IDS', '').split(',') if id.strip()] or [1]
+
 # Database initialization
 def init_db():
     with sqlite3.connect('database.db') as conn:
@@ -52,6 +55,26 @@ def init_db():
 
         try:
             cursor.execute('ALTER TABLE users ADD COLUMN background_color TEXT')
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN avatar_frame TEXT')
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN avatar_border TEXT')
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN avatar_badge TEXT')
+        except sqlite3.OperationalError:
+            pass  # Column already exists
+
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN avatar_effect TEXT')
         except sqlite3.OperationalError:
             pass  # Column already exists
 
@@ -113,6 +136,22 @@ def init_db():
             )
         ''')
 
+        # Create custom decorations table for moderators
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS custom_decorations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                moderator_id INTEGER NOT NULL,
+                name TEXT NOT NULL,
+                description TEXT,
+                decoration_type TEXT NOT NULL,
+                color TEXT,
+                icon TEXT,
+                price INTEGER DEFAULT 500,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (moderator_id) REFERENCES users(id)
+            )
+        ''')
+
         conn.commit()
 
 init_db()
@@ -171,7 +210,17 @@ def login():
         if user and check_password_hash(user[1], password):  # Check hashed password
             session['username'] = username
             session['user_id'] = user[0]  # Store user ID
-            session['role'] = user[2]     # Store user role
+            
+            # Check if user ID is in moderator list and update role if needed
+            if user[0] in MODERATOR_IDS and user[2] != 'moderator':
+                with sqlite3.connect('database.db') as conn:
+                    cursor = conn.cursor()
+                    cursor.execute('UPDATE users SET role = ? WHERE id = ?', ('moderator', user[0]))
+                    conn.commit()
+                session['role'] = 'moderator'
+            else:
+                session['role'] = user[2]
+            
             session['profile_picture'] = user[3]  # Store profile picture filename
             return redirect(url_for('index'))
         else:
@@ -202,6 +251,15 @@ def privacy_policy():
 @app.route('/monetization')
 def monetization():
     return render_template('monetization.html')
+
+@app.route('/avatar-store')
+def avatar_store():
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT id, name, description, decoration_type, color, icon, price FROM custom_decorations ORDER BY id DESC')
+        custom_decorations = cursor.fetchall()
+    
+    return render_template('avatar_store.html', custom_decorations=custom_decorations)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
@@ -392,16 +450,23 @@ def profile():
         user_songs = cursor.fetchall()
         song_count = len(user_songs)
 
-        cursor.execute('SELECT font, accent_color, background_color FROM users WHERE id = ?', (session['user_id'],))
-        customization = cursor.fetchone()
+        cursor.execute('SELECT font, accent_color, background_color, avatar_frame, avatar_border, avatar_badge, avatar_effect FROM users WHERE id = ?', (session['user_id'],))
+        user_data = cursor.fetchone()
+        customization = user_data[:3] if user_data else None
+        decorations = user_data[3:] if user_data else None
 
     return render_template('profile.html',
+                           user_id=session['user_id'],
                            username=session['username'],
                            role=session.get('role', 'user'),
                            profile_picture=session.get('profile_picture'),
                            songs=user_songs,
                            song_count=song_count,
-                           customization=customization)
+                           customization=customization,
+                           avatar_frame=decorations[0] if decorations else None,
+                           avatar_border=decorations[1] if decorations else None,
+                           avatar_badge=decorations[2] if decorations else None,
+                           avatar_effect=decorations[3] if decorations else None)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
@@ -409,16 +474,27 @@ def edit_profile():
         return redirect(url_for('login'))
 
     if request.method == 'POST':
-        new_username = request.form['username']
-        current_password = request.form['current_password']
+        new_username = request.form.get('username')
+        current_password = request.form.get('current_password')
         new_password = request.form.get('new_password')
+        
+        # Get decoration fields
+        avatar_frame = request.form.get('avatar_frame')
+        avatar_border = request.form.get('avatar_border')
+        avatar_badge = request.form.get('avatar_badge')
+        avatar_effect = request.form.get('avatar_effect')
 
         with sqlite3.connect('database.db') as conn:
             cursor = conn.cursor()
             cursor.execute('SELECT password FROM users WHERE id = ?', (session['user_id'],))
             db_password = cursor.fetchone()[0]
 
-            if check_password_hash(db_password, current_password):
+            # If current_password is provided, verify it before making changes
+            if current_password:
+                if not check_password_hash(db_password, current_password):
+                    flash('Current password is incorrect.')
+                    return render_template('edit_profile.html', current_username=session['username'])
+                
                 if new_username:
                     cursor.execute('UPDATE users SET username = ? WHERE id = ?', (new_username, session['user_id']))
                     session['username'] = new_username
@@ -427,11 +503,19 @@ def edit_profile():
                     hashed_new_password = generate_password_hash(new_password)
                     cursor.execute('UPDATE users SET password = ? WHERE id = ?', (hashed_new_password, session['user_id']))
 
-                conn.commit()
-                flash('Profile updated successfully.')
-                return redirect(url_for('profile'))
-            else:
-                flash('Current password is incorrect.')
+            # Update decorations regardless of password
+            if avatar_frame is not None:
+                cursor.execute('UPDATE users SET avatar_frame = ? WHERE id = ?', (avatar_frame, session['user_id']))
+            if avatar_border is not None:
+                cursor.execute('UPDATE users SET avatar_border = ? WHERE id = ?', (avatar_border, session['user_id']))
+            if avatar_badge is not None:
+                cursor.execute('UPDATE users SET avatar_badge = ? WHERE id = ?', (avatar_badge, session['user_id']))
+            if avatar_effect is not None:
+                cursor.execute('UPDATE users SET avatar_effect = ? WHERE id = ?', (avatar_effect, session['user_id']))
+
+            conn.commit()
+            flash('Profile updated successfully.')
+            return redirect(url_for('profile'))
 
     return render_template('edit_profile.html', current_username=session['username'])
 
@@ -521,7 +605,7 @@ def manage_users():
 def user_profile(user_id):
     with sqlite3.connect('database.db') as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT username, profile_picture, role FROM users WHERE id = ?', (user_id,))
+        cursor.execute('SELECT username, profile_picture, role, avatar_frame, avatar_border, avatar_badge, avatar_effect FROM users WHERE id = ?', (user_id,))
         user = cursor.fetchone()
 
         if not user:
@@ -547,6 +631,10 @@ def user_profile(user_id):
                            username=user[0],
                            profile_picture=user[1],
                            role=user[2],
+                           avatar_frame=user[3],
+                           avatar_border=user[4],
+                           avatar_badge=user[5],
+                           avatar_effect=user[6],
                            songs=user_songs,
                            followers_count=followers_count,
                            following_count=following_count,
@@ -760,6 +848,71 @@ def customize_profile():
         customization = cursor.fetchone()
 
     return render_template('customize_profile.html', customization=customization)
+
+@app.route('/moderator/upload-decoration', methods=['GET', 'POST'])
+def upload_decoration():
+    if 'username' not in session or session.get('role') != 'moderator':
+        flash('You must be a moderator to access this page.')
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        name = request.form.get('name')
+        description = request.form.get('description')
+        decoration_type = request.form.get('decoration_type')
+        color = request.form.get('color')
+        icon = request.form.get('icon')
+        price = request.form.get('price', 500)
+
+        if not name or not decoration_type:
+            flash('Name and decoration type are required.')
+            return render_template('upload_decoration.html')
+
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO custom_decorations (moderator_id, name, description, decoration_type, color, icon, price)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (session['user_id'], name, description, decoration_type, color, icon, int(price)))
+            conn.commit()
+
+        flash('Decoration uploaded successfully!')
+        return redirect(url_for('moderator_decorations'))
+
+    return render_template('upload_decoration.html')
+
+@app.route('/moderator/decorations')
+def moderator_decorations():
+    if 'username' not in session or session.get('role') != 'moderator':
+        flash('You must be a moderator to access this page.')
+        return redirect(url_for('index'))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT id, name, description, decoration_type, color, icon, price FROM custom_decorations WHERE moderator_id = ?', (session['user_id'],))
+        decorations = cursor.fetchall()
+
+    return render_template('moderator_decorations.html', decorations=decorations)
+
+@app.route('/moderator/delete-decoration/<int:decoration_id>', methods=['POST'])
+def delete_decoration(decoration_id):
+    if 'username' not in session or session.get('role') != 'moderator':
+        flash('You must be a moderator to access this page.')
+        return redirect(url_for('index'))
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        # Verify the decoration belongs to this moderator
+        cursor.execute('SELECT moderator_id FROM custom_decorations WHERE id = ?', (decoration_id,))
+        decoration = cursor.fetchone()
+
+        if decoration and decoration[0] == session['user_id']:
+            cursor.execute('DELETE FROM custom_decorations WHERE id = ?', (decoration_id,))
+            conn.commit()
+            flash('Decoration deleted successfully!')
+        else:
+            flash('You can only delete your own decorations.')
+
+    return redirect(url_for('moderator_decorations'))
 
 if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):

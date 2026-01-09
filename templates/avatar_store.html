@@ -1,0 +1,593 @@
+{% extends "base.html" %}
+{% block title %}Avatar Decorations Store - HopOn Music{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="mb-5">
+            <h1 class="text-center mb-2" style="color: #a31ed7;">✨ Avatar Decorations Store</h1>
+            <p class="text-center text-muted mb-4">Personalize your profile with exclusive decorations and frames!</p>
+        </div>
+
+        <!-- Store Navigation Tabs -->
+        <div class="mb-4">
+            <ul class="nav nav-pills justify-content-center" id="storeTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="frames-tab" data-bs-toggle="tab" data-bs-target="#frames" type="button" role="tab">
+                        🖼️ Frames
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="borders-tab" data-bs-toggle="tab" data-bs-target="#borders" type="button" role="tab">
+                        ⭐ Borders
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="badges-tab" data-bs-toggle="tab" data-bs-target="#badges" type="button" role="tab">
+                        🏆 Badges
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="effects-tab" data-bs-toggle="tab" data-bs-target="#effects" type="button" role="tab">
+                        ✨ Effects
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="community-tab" data-bs-toggle="tab" data-bs-target="#community" type="button" role="tab">
+                        👥 Community Creations
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Store Content -->
+        <div class="tab-content" id="storeTabContent">
+            
+            <!-- Frames Section -->
+            <div class="tab-pane fade show active" id="frames" role="tabpanel">
+                <h2 class="mb-4" style="color: #a31ed7;">Picture Frames</h2>
+                <div class="row">
+                    <!-- Frame 1 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, #8d1db9, #a31ed7); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <div style="width: 100px; height: 100px; background: white; border-radius: 8px; border: 4px solid #a31ed7;"></div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Purple Glow</h5>
+                                <p class="card-text text-muted">A vibrant purple frame with glowing edges. Perfect for your profile.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">500 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Frame 2 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, #1a1a2e, #0f3460); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0; border: 3px solid #00d4ff;">
+                                <div style="width: 100px; height: 100px; background: white; border-radius: 8px; border: 4px solid #00d4ff;"></div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Neon Cyan</h5>
+                                <p class="card-text text-muted">Sleek cyan neon frame that stands out. Great for modern profiles.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">500 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Frame 3 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, #2d5016, #5a7c14); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <div style="width: 100px; height: 100px; background: white; border-radius: 8px; border: 4px dashed #7cff00;"></div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Lime Dashed</h5>
+                                <p class="card-text text-muted">Bold lime green dashed frame. Perfect for artists with style.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">400 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Frame 4 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, #4a0000, #8b0000); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <div style="width: 100px; height: 100px; background: white; border-radius: 8px; border: 4px solid #ff4757; box-shadow: 0 0 15px rgba(255, 71, 87, 0.6);"></div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Crimson Aura</h5>
+                                <p class="card-text text-muted">Dark red frame with a glowing crimson aura effect.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">600 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Frame 5 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, #1a1a1a, #2d2d2d); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0; border: 3px solid #ffd700;">
+                                <div style="width: 100px; height: 100px; background: white; border-radius: 8px; border: 4px solid #ffd700;"></div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Gold Prestige</h5>
+                                <p class="card-text text-muted">Elegant gold frame for premium members. Exclusive look.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">1000 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Frame 6 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, #0a0a0a, #1a1a1a); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0; border: 3px solid #ff1493; box-shadow: 0 0 20px rgba(255, 20, 147, 0.4);"></div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Hot Pink Gamer</h5>
+                                <p class="card-text text-muted">Vibrant hot pink frame for gaming enthusiasts.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">550 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Borders Section -->
+            <div class="tab-pane fade" id="borders" role="tabpanel">
+                <h2 class="mb-4" style="color: #a31ed7;">Profile Borders</h2>
+                <div class="row">
+                    <!-- Border 1 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: repeating-linear-gradient(90deg, #a31ed7, #a31ed7 2px, transparent 2px, transparent 8px); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="color: white; font-size: 24px;">⭐</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Dotted Purple</h5>
+                                <p class="card-text text-muted">Minimalist dotted border in your app's signature purple.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">300 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Border 2 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(45deg, transparent 48%, #00d4ff 48%, #00d4ff 52%, transparent 52%); background-size: 20px 20px; min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="color: white; font-size: 24px;">✨</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Neon Zigzag</h5>
+                                <p class="card-text text-muted">Eye-catching zigzag pattern in bright cyan.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">400 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Border 3 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: repeating-conic-gradient(#7cff00 0% 25%, #ffd700 0% 50%); background-size: 30px 30px; min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="color: #1a1a1a; font-size: 24px;">🎵</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Rainbow Tiles</h5>
+                                <p class="card-text text-muted">Colorful gradient border perfect for musicians.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">500 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Border 4 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(90deg, #ff1493, #a31ed7, #00d4ff); background-size: 100% 8px; background-repeat: repeat-y; min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="color: white; font-size: 24px;">🌈</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Gradient Wave</h5>
+                                <p class="card-text text-muted">Smooth gradient wave border across the profile.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">600 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Border 5 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: repeating-linear-gradient(0deg, #ffd700 0px, #ffd700 3px, transparent 3px, transparent 15px); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0; border: 2px solid #ffd700;">
+                                <span style="color: #ffd700; font-size: 24px;">👑</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Royal Gold</h5>
+                                <p class="card-text text-muted">Premium gold border for top artists and creators.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">750 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Border 6 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: repeating-linear-gradient(90deg, #00d4ff 0px, #00d4ff 4px, #a31ed7 4px, #a31ed7 8px); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="color: white; font-size: 24px;">⚡</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Electric Mix</h5>
+                                <p class="card-text text-muted">Alternating cyan and purple stripes border.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">450 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Badges Section -->
+            <div class="tab-pane fade" id="badges" role="tabpanel">
+                <h2 class="mb-4" style="color: #a31ed7;">Profile Badges</h2>
+                <div class="row">
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, #ffd700, #ffed4e); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="font-size: 48px;">⭐</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Top Artist</h5>
+                                <p class="card-text text-muted">Badge awarded to top performing artists on the platform.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">Free</span>
+                                    <button class="btn btn-sm btn-player-secondary" disabled>Earned</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, #ff1493, #ff69b4); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="font-size: 48px;">💎</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Diamond Member</h5>
+                                <p class="card-text text-muted">Premium membership badge with special privileges.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">1200 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, #00d4ff, #00ffff); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="font-size: 48px;">🚀</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Rising Star</h5>
+                                <p class="card-text text-muted">For artists showing rapid growth and engagement.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">800 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, #7cff00, #adff2f); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="font-size: 48px;">🎵</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Music Pioneer</h5>
+                                <p class="card-text text-muted">Badge for prolific musicians with diverse catalog.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">1000 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, #ff6b6b, #ff8787); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="font-size: 48px;">❤️</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Fan Favorite</h5>
+                                <p class="card-text text-muted">Awarded for high listener engagement and love.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">900 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, #a31ed7, #c71ef5); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="font-size: 48px;">👑</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Platinum Elite</h5>
+                                <p class="card-text text-muted">Exclusive badge for platinum-certified artists.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">1500 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Effects Section -->
+            <div class="tab-pane fade" id="effects" role="tabpanel">
+                <h2 class="mb-4" style="color: #a31ed7;">Profile Effects</h2>
+                <div class="row">
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, #a31ed7, #a31ed7); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0; animation: pulse 2s ease-in-out infinite;">
+                                <span style="color: white; font-size: 24px;">✨</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Purple Pulse</h5>
+                                <p class="card-text text-muted">Smooth pulsing glow effect in purple tones.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">350 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: conic-gradient(from 0deg, #00d4ff, #a31ed7, #ffd700, #00d4ff); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="color: white; font-size: 24px;">🌈</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Rainbow Spin</h5>
+                                <p class="card-text text-muted">Rotating rainbow gradient effect around profile.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">500 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(255,255,255,0.1) 20px, rgba(255,255,255,0.1) 40px); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0; background-color: #1a1a1a;">
+                                <span style="color: white; font-size: 24px;">⚡</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Neon Scan</h5>
+                                <p class="card-text text-muted">Scanning line effect that moves across profile.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">600 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: radial-gradient(circle, #ffd700 0%, rgba(255,215,0,0.5) 50%, transparent 70%); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0; background-color: #0a0a0a;">
+                                <span style="color: #ffd700; font-size: 24px;">✨</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Gold Aura</h5>
+                                <p class="card-text text-muted">Warm golden glow that radiates from your avatar.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">700 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(90deg, #00d4ff 0%, #a31ed7 50%, #00d4ff 100%); background-size: 200% 100%; min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="color: white; font-size: 24px;">🌊</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Wave Motion</h5>
+                                <p class="card-text text-muted">Flowing wave effect that cycles through colors.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">650 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: repeating-radial-gradient(circle, #ff1493 0px, #ff1493 5px, #a31ed7 5px, #a31ed7 10px); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="color: white; font-size: 24px;">💥</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">Cosmic Energy</h5>
+                                <p class="card-text text-muted">Bursting cosmic energy effect in vibrant colors.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">800 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Community Creations Tab -->
+            <div class="tab-pane fade" id="community" role="tabpanel">
+                <h2 class="mb-4" style="color: #a31ed7;">Community Creations</h2>
+                {% if custom_decorations %}
+                <div class="row">
+                    {% for decoration in custom_decorations %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card bg-dark text-light h-100 decoration-card">
+                            <div class="decoration-preview mb-3" style="background: linear-gradient(135deg, {{ decoration[4] }}, {{ decoration[4] }}); min-height: 150px; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0;">
+                                <span style="color: white; font-size: 24px;">{{ decoration[5] }}</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: #a31ed7;">{{ decoration[1] }}</h5>
+                                <p class="card-text text-muted">{{ decoration[2] }}</p>
+                                <div class="mb-3">
+                                    <span class="badge" style="background-color: {{ decoration[4] }}; color: white;">{{ decoration[3]|title }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary" style="background-color: #a31ed7 !important;">{{ decoration[6] }} 💎</span>
+                                    <button class="btn btn-sm btn-player-secondary">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle"></i> No community creations yet. Check back soon as moderators upload new designs!
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Currency Info Section -->
+        <div class="row mt-5 mb-4">
+            <div class="col-md-6 mb-3">
+                <div class="card bg-dark text-light p-4 rounded-3">
+                    <h5 style="color: #a31ed7;" class="mb-3"><i class="fas fa-coins"></i> About Gems (💎)</h5>
+                    <p>Gems are the premium currency used to purchase decorations. You can earn free gems by:</p>
+                    <ul class="mb-0">
+                        <li>Reaching stream milestones</li>
+                        <li>Completing daily challenges</li>
+                        <li>Referral bonuses</li>
+                        <li>Or purchase them directly</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card bg-dark text-light p-4 rounded-3">
+                    <h5 style="color: #a31ed7;" class="mb-3"><i class="fas fa-star"></i> Your Current Balance</h5>
+                    {% if 'username' in session %}
+                        <h3 style="color: #a31ed7;">1,250 💎</h3>
+                        <a href="#" class="btn btn-player-primary mt-2">Purchase More Gems</a>
+                    {% else %}
+                        <p class="mb-0">Sign in to check your gems balance and make purchases.</p>
+                        <a href="{{ url_for('login') }}" class="btn btn-player-primary mt-2">Sign In</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="text-center mt-4">
+            <a href="{{ url_for('index') }}" class="btn btn-outline-light">Back to Home</a>
+        </div>
+    </div>
+
+    <style>
+        .decoration-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .decoration-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(163, 30, 215, 0.3);
+        }
+
+        .decoration-preview {
+            background: linear-gradient(135deg, #8d1db9, #a31ed7);
+        }
+
+        .nav-pills .nav-link {
+            color: var(--subtext-color);
+            transition: all 0.3s ease;
+            border-radius: 25px;
+            margin: 0 5px;
+        }
+
+        .nav-pills .nav-link:hover {
+            background-color: rgba(163, 30, 215, 0.2);
+            color: #a31ed7;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #a31ed7;
+            color: white;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .btn-player-primary {
+            background: linear-gradient(135deg, #8d1db9, #a31ed7);
+            border: none;
+            color: white;
+        }
+
+        .btn-player-primary:hover {
+            background: linear-gradient(135deg, #a31ed7, #c71ef5);
+            color: white;
+        }
+
+        .btn-player-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid #a31ed7;
+        }
+
+        .btn-player-secondary:hover {
+            background-color: #a31ed7;
+            color: white;
+        }
+    </style>
+{% endblock %}

@@ -6,13 +6,22 @@
 <div class="card bg-secondary bg-opacity-10 border-0 shadow-sm rounded-4 p-4">
     <div class="row align-items-center">
         <div class="col-md-3 text-center mb-3 mb-md-0">
-            {% if profile_picture %}
-                <img src="{{ url_for('static', filename='uploads/' ~ profile_picture) }}" alt="Profile Picture" class="img-fluid rounded-circle shadow-sm" style="max-width: 150px;">
-            {% else %}
-                <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
-                    <span class="fs-1 text-light">👤</span>
-                </div>
-            {% endif %}
+            <div class="avatar-decoration-container" style="position: relative; display: inline-block;">
+                {% if profile_picture %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ profile_picture) }}" alt="Profile Picture" class="img-fluid rounded-circle shadow-sm avatar-img" style="max-width: 150px; position: relative; z-index: 2;" data-frame="{{ avatar_frame }}" data-border="{{ avatar_border }}" data-badge="{{ avatar_badge }}" data-effect="{{ avatar_effect }}">
+                {% else %}
+                    <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center avatar-placeholder" style="width: 150px; height: 150px; position: relative; z-index: 2;" data-frame="{{ avatar_frame }}" data-border="{{ avatar_border }}" data-badge="{{ avatar_badge }}" data-effect="{{ avatar_effect }}">
+                        <span class="fs-1 text-light">👤</span>
+                    </div>
+                {% endif %}
+                
+                <!-- Badge Overlay -->
+                {% if avatar_badge and avatar_badge != 'none' %}
+                    <div class="avatar-badge" style="position: absolute; bottom: -10px; right: -10px; width: 50px; height: 50px; border-radius: 50%; background: #a31ed7; display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 3; border: 3px solid #121212;">
+                        {% if avatar_badge == 'top_artist' %}⭐{% elif avatar_badge == 'diamond' %}💎{% elif avatar_badge == 'rising_star' %}🚀{% elif avatar_badge == 'music_pioneer' %}🎵{% elif avatar_badge == 'platinum_elite' %}👑{% endif %}
+                    </div>
+                {% endif %}
+            </div>
         </div>
         <div class="col-md-9">
             <h2 class="text fw-semibold mb-2">{{ username }}</h2>
@@ -32,6 +41,136 @@
         </div>
     </div>
 </div>
+
+<style>
+    .avatar-decoration-container {
+        animation: {{ avatar_effect if avatar_effect and avatar_effect != 'none' else 'none' }};
+    }
+
+    {% if avatar_effect == 'pulse' %}
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+    .avatar-decoration-container { animation: pulse 2s ease-in-out infinite; }
+    {% endif %}
+
+    {% if avatar_effect == 'spin' %}
+    @keyframes rainbow-spin {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+    }
+    .avatar-decoration-container { animation: rainbow-spin 3s linear infinite; }
+    {% endif %}
+
+    {% if avatar_effect == 'scan' %}
+    @keyframes neon-scan {
+        0%, 100% { box-shadow: 0 0 10px rgba(0, 212, 255, 0.5); }
+        50% { box-shadow: 0 0 20px rgba(0, 212, 255, 1); }
+    }
+    .avatar-decoration-container { animation: neon-scan 2s ease-in-out infinite; }
+    {% endif %}
+
+    {% if avatar_effect == 'aura' %}
+    @keyframes gold-aura {
+        0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); }
+        50% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
+    }
+    .avatar-decoration-container { animation: gold-aura 2.5s ease-in-out infinite; }
+    {% endif %}
+
+    {% if avatar_effect == 'cosmic' %}
+    @keyframes cosmic-energy {
+        0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 20, 147, 0.6)); }
+        50% { filter: drop-shadow(0 0 25px rgba(163, 30, 215, 0.8)); }
+    }
+    .avatar-decoration-container { animation: cosmic-energy 2s ease-in-out infinite; }
+    {% endif %}
+
+    /* Frame Styles */
+    {% if avatar_frame == 'purple' %}
+    .avatar-img, .avatar-placeholder {
+        border: 4px solid #a31ed7 !important;
+        box-shadow: 0 0 20px rgba(163, 30, 215, 0.6), inset 0 0 20px rgba(163, 30, 215, 0.2) !important;
+    }
+    {% elif avatar_frame == 'cyan' %}
+    .avatar-img, .avatar-placeholder {
+        border: 4px solid #00d4ff !important;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.6) !important;
+    }
+    {% elif avatar_frame == 'lime' %}
+    .avatar-img, .avatar-placeholder {
+        border: 4px dashed #7cff00 !important;
+        box-shadow: 0 0 15px rgba(124, 255, 0, 0.5) !important;
+    }
+    {% elif avatar_frame == 'crimson' %}
+    .avatar-img, .avatar-placeholder {
+        border: 4px solid #ff4757 !important;
+        box-shadow: 0 0 20px rgba(255, 71, 87, 0.6) !important;
+    }
+    {% elif avatar_frame == 'gold' %}
+    .avatar-img, .avatar-placeholder {
+        border: 4px solid #ffd700 !important;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6) !important;
+    }
+    {% endif %}
+
+    /* Border Styles */
+    .avatar-decoration-container::before {
+        {% if avatar_border == 'dotted' %}
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        border: 2px dotted #a31ed7;
+        border-radius: 50%;
+        z-index: 1;
+        {% elif avatar_border == 'zigzag' %}
+        content: '';
+        position: absolute;
+        top: -15px;
+        left: -15px;
+        right: -15px;
+        bottom: -15px;
+        border: 3px solid #00d4ff;
+        border-radius: 50%;
+        z-index: 1;
+        {% elif avatar_border == 'tiles' %}
+        content: '';
+        position: absolute;
+        top: -12px;
+        left: -12px;
+        right: -12px;
+        bottom: -12px;
+        background: conic-gradient(from 0deg, #7cff00, #ffd700, #7cff00);
+        border-radius: 50%;
+        z-index: 1;
+        {% elif avatar_border == 'wave' %}
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        border: 3px solid #ff1493;
+        border-radius: 50%;
+        box-shadow: 0 0 15px rgba(255, 20, 147, 0.5);
+        z-index: 1;
+        {% elif avatar_border == 'gold_border' %}
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
+        border: 3px solid #ffd700;
+        border-radius: 50%;
+        z-index: 1;
+        {% endif %}
+    }
+</style>
 
 <hr class="my-4 border-light">
 

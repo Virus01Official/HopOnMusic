@@ -3,28 +3,282 @@
 {% block title %}Edit Profile - HopOn Music{% endblock %}
 
 {% block content %}
-<div class="card bg-secondary bg-opacity-10 border-0 shadow-sm rounded-4 p-4">
-    <h3 class="mb-4 fw-semibold text">Edit Profile Info</h3>
-    <form method="POST">
-        <div class="mb-3">
-            <label class="form-label text-light">New Username</label>
-            <input type="text" name="username" class="form-control bg-dark text-light border-secondary" value="{{ current_username }}">
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card bg-secondary bg-opacity-10 border-0 shadow-sm rounded-4 p-4">
+                <h3 class="mb-4 fw-semibold text" style="color: #a31ed7;">Edit Profile Info</h3>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label text-light">New Username</label>
+                        <input type="text" name="username" class="form-control bg-dark text-light border-secondary" value="{{ current_username }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-light">Current Password <span class="text-danger">*</span></label>
+                        <input type="password" name="current_password" class="form-control bg-dark text-light border-secondary" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-light">New Password <small class="text-muted">(leave blank to keep current)</small></label>
+                        <input type="password" name="new_password" class="form-control bg-dark text-light border-secondary">
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <a href="{{ url_for('profile') }}" class="btn btn-outline-light me-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label text-light">Current Password <span class="text-danger">*</span></label>
-            <input type="password" name="current_password" class="form-control bg-dark text-light border-secondary" required>
+        <!-- Avatar Decorations Preview -->
+        <div class="col-lg-4">
+            <div class="card bg-dark text-light rounded-4 p-4" style="border: 2px solid #a31ed7;">
+                <h5 style="color: #a31ed7;" class="mb-4 text-center">Avatar Preview</h5>
+                <div class="text-center mb-3">
+                    <div style="width: 150px; height: 150px; margin: 0 auto; border-radius: 8px; background: #282828; display: flex; align-items: center; justify-content: center; border: 3px solid #a31ed7;">
+                        <span style="font-size: 64px;">👤</span>
+                    </div>
+                </div>
+                <p class="text-center text-muted small">Your avatar with selected decorations</p>
+            </div>
         </div>
+    </div>
 
-        <div class="mb-3">
-            <label class="form-label text-light">New Password <small class="text-muted">(leave blank to keep current)</small></label>
-            <input type="password" name="new_password" class="form-control bg-dark text-light border-secondary">
-        </div>
+    <!-- Avatar Decorations Section -->
+    <div class="card bg-secondary bg-opacity-10 border-0 shadow-sm rounded-4 p-4">
+        <h3 class="mb-4 fw-semibold" style="color: #a31ed7;">
+            <i class="fas fa-star"></i> Avatar Decorations
+        </h3>
 
-        <div class="d-flex justify-content-end">
-            <a href="{{ url_for('profile') }}" class="btn btn-outline-light me-2">Cancel</a>
-            <button type="submit" class="btn btn-success">Save Changes</button>
-        </div>
-    </form>
+        <form method="POST" action="{{ url_for('edit_profile') }}">
+            <div class="row">
+                <!-- Avatar Frame -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card bg-dark text-light rounded-3 p-4">
+                        <h5 style="color: #a31ed7;" class="mb-3">Picture Frame</h5>
+                        <div class="decoration-grid mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_frame" id="frame_none" value="none" checked>
+                                <label class="form-check-label text-light" for="frame_none">
+                                    None
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_frame" id="frame_purple" value="purple">
+                                <label class="form-check-label text-light" for="frame_purple">
+                                    <span style="color: #a31ed7;">■</span> Purple Glow
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_frame" id="frame_cyan" value="cyan">
+                                <label class="form-check-label text-light" for="frame_cyan">
+                                    <span style="color: #00d4ff;">■</span> Neon Cyan
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_frame" id="frame_lime" value="lime">
+                                <label class="form-check-label text-light" for="frame_lime">
+                                    <span style="color: #7cff00;">■</span> Lime Dashed
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_frame" id="frame_crimson" value="crimson">
+                                <label class="form-check-label text-light" for="frame_crimson">
+                                    <span style="color: #ff4757;">■</span> Crimson Aura
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_frame" id="frame_gold" value="gold">
+                                <label class="form-check-label text-light" for="frame_gold">
+                                    <span style="color: #ffd700;">■</span> Gold Prestige
+                                </label>
+                            </div>
+                        </div>
+                        <small class="text-muted">Choose a frame style for your profile picture</small>
+                    </div>
+                </div>
+
+                <!-- Avatar Border -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card bg-dark text-light rounded-3 p-4">
+                        <h5 style="color: #a31ed7;" class="mb-3">Profile Border</h5>
+                        <div class="decoration-grid mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_border" id="border_none" value="none" checked>
+                                <label class="form-check-label text-light" for="border_none">
+                                    None
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_border" id="border_dotted" value="dotted">
+                                <label class="form-check-label text-light" for="border_dotted">
+                                    <span style="color: #a31ed7;">◆◆◆</span> Dotted Purple
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_border" id="border_zigzag" value="zigzag">
+                                <label class="form-check-label text-light" for="border_zigzag">
+                                    <span style="color: #00d4ff;">~/~/~</span> Neon Zigzag
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_border" id="border_tiles" value="tiles">
+                                <label class="form-check-label text-light" for="border_tiles">
+                                    <span style="color: #7cff00;">▦▦▦</span> Rainbow Tiles
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_border" id="border_wave" value="wave">
+                                <label class="form-check-label text-light" for="border_wave">
+                                    <span style="color: #ff1493;">≈≈≈</span> Gradient Wave
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_border" id="border_gold" value="gold_border">
+                                <label class="form-check-label text-light" for="border_gold">
+                                    <span style="color: #ffd700;">═══</span> Royal Gold
+                                </label>
+                            </div>
+                        </div>
+                        <small class="text-muted">Choose a border pattern for your profile</small>
+                    </div>
+                </div>
+
+                <!-- Avatar Badge -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card bg-dark text-light rounded-3 p-4">
+                        <h5 style="color: #a31ed7;" class="mb-3">Profile Badge</h5>
+                        <div class="decoration-grid mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_badge" id="badge_none" value="none" checked>
+                                <label class="form-check-label text-light" for="badge_none">
+                                    None
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_badge" id="badge_artist" value="top_artist">
+                                <label class="form-check-label text-light" for="badge_artist">
+                                    <span style="color: #ffd700;">⭐</span> Top Artist
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_badge" id="badge_diamond" value="diamond">
+                                <label class="form-check-label text-light" for="badge_diamond">
+                                    <span style="color: #ff1493;">💎</span> Diamond Member
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_badge" id="badge_rising" value="rising_star">
+                                <label class="form-check-label text-light" for="badge_rising">
+                                    <span style="color: #00d4ff;">🚀</span> Rising Star
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_badge" id="badge_pioneer" value="music_pioneer">
+                                <label class="form-check-label text-light" for="badge_pioneer">
+                                    <span style="color: #7cff00;">🎵</span> Music Pioneer
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_badge" id="badge_elite" value="platinum_elite">
+                                <label class="form-check-label text-light" for="badge_elite">
+                                    <span style="color: #a31ed7;">👑</span> Platinum Elite
+                                </label>
+                            </div>
+                        </div>
+                        <small class="text-muted">Display a badge on your profile</small>
+                    </div>
+                </div>
+
+                <!-- Avatar Effect -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card bg-dark text-light rounded-3 p-4">
+                        <h5 style="color: #a31ed7;" class="mb-3">Profile Effect</h5>
+                        <div class="decoration-grid mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_effect" id="effect_none" value="none" checked>
+                                <label class="form-check-label text-light" for="effect_none">
+                                    None
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_effect" id="effect_pulse" value="pulse">
+                                <label class="form-check-label text-light" for="effect_pulse">
+                                    ✨ Purple Pulse
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_effect" id="effect_spin" value="spin">
+                                <label class="form-check-label text-light" for="effect_spin">
+                                    🌈 Rainbow Spin
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_effect" id="effect_scan" value="scan">
+                                <label class="form-check-label text-light" for="effect_scan">
+                                    ⚡ Neon Scan
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_effect" id="effect_aura" value="aura">
+                                <label class="form-check-label text-light" for="effect_aura">
+                                    ✨ Gold Aura
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="avatar_effect" id="effect_cosmic" value="cosmic">
+                                <label class="form-check-label text-light" for="effect_cosmic">
+                                    💥 Cosmic Energy
+                                </label>
+                            </div>
+                        </div>
+                        <small class="text-muted">Add an animated effect to your profile</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info rounded-3 mt-4" style="background-color: #281a3f; border-color: #a31ed7; color: #ffffff;">
+                <i class="fas fa-info-circle"></i> Pro tip: Visit the <a href="{{ url_for('avatar_store') }}" style="color: #00d4ff; text-decoration: underline;">Avatar Store</a> to purchase premium decorations with gems!
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <a href="{{ url_for('profile') }}" class="btn btn-outline-light">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Decorations</button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<style>
+    .decoration-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 12px;
+    }
+
+    .form-check {
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #404040;
+        transition: all 0.3s ease;
+    }
+
+    .form-check:hover {
+        border-color: #a31ed7;
+        background-color: rgba(163, 30, 215, 0.1);
+    }
+
+    .form-check-input:checked {
+        background-color: #a31ed7;
+        border-color: #a31ed7;
+    }
+
+    .form-check-input {
+        border: 2px solid #404040;
+        width: 18px;
+        height: 18px;
+    }
+</style>
 {% endblock %}
