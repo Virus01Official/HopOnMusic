@@ -2,20 +2,136 @@
 {% block title %}My Playlists - HopOn Music{% endblock %}
 
 {% block content %}
-    <div class="card bg-secondary text-light shadow-lg p-4 rounded-4">
-        <h2 class="mb-4">Your Playlists</h2>
-        <ul class="list-group">
-            {% for playlist in playlists %}
-                <li class="list-group-item bg-dark text-light d-flex justify-content-between align-items-center">
-                    <a href="{{ url_for('view_playlist', playlist_id=playlist[0]) }}" class="text-decoration-none text-success fw-semibold">
-                        {{ playlist[1] }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-        <div class="mt-4">
-            <a href="{{ url_for('create_playlist') }}" class="btn btn-success">Create New Playlist</a>
-            <a href="{{ url_for('player') }}" class="btn btn-outline-light ms-2">Back to Player</a>
+<div class="container mt-5 mb-5">
+    <!-- Header Section -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="fw-bold mb-2" style="color: #a31ed7;">
+                    <i class="fas fa-list-ul me-3"></i>My Playlists
+                </h1>
+                <p class="text-muted">Manage and explore your music collections</p>
+            </div>
+            <a href="{{ url_for('create_playlist') }}" class="btn fw-semibold" style="background-color: #a31ed7; border: none; color: white; padding: 12px 24px; border-radius: 25px; transition: all 0.3s ease;">
+                <i class="fas fa-plus me-2"></i>New Playlist
+            </a>
         </div>
     </div>
+
+    <!-- Playlists Grid -->
+    {% if playlists %}
+        <div class="row g-4">
+            {% for playlist in playlists %}
+                <div class="col-md-6 col-lg-4">
+                    <a href="{{ url_for('view_playlist', playlist_id=playlist[0]) }}" class="text-decoration-none">
+                        <div class="card h-100 bg-dark border-0 shadow-lg playlist-card" style="background-color: #181818 !important; border-radius: 12px; cursor: pointer; transition: all 0.3s ease;">
+                            <!-- Playlist Icon/Background -->
+                            <div class="playlist-icon-container d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #a31ed7 0%, #6d1a9e 100%); height: 180px; position: relative; overflow: hidden;">
+                                <i class="fas fa-compact-disc fa-4x" style="color: rgba(255, 255, 255, 0.8); opacity: 0.3; position: absolute;"></i>
+                                <div style="position: relative; z-index: 1;">
+                                    <i class="fas fa-music fa-3x" style="color: white;"></i>
+                                </div>
+                            </div>
+
+                            <!-- Playlist Details -->
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <div>
+                                    <h5 class="card-title fw-bold mb-2 text-white" style="word-break: break-word;">
+                                        {{ playlist[1] }}
+                                    </h5>
+                                    <p class="text-muted mb-3" style="font-size: 0.9rem;">
+                                        <i class="fas fa-music me-2"></i>View & manage songs
+                                    </p>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge" style="background-color: #a31ed7; color: white; padding: 6px 12px; border-radius: 15px;">
+                                        <i class="fas fa-play-circle me-1"></i>Playlist
+                                    </span>
+                                    <small class="text-muted">
+                                        <i class="fas fa-arrow-right me-1"></i>Open
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-5">
+            <i class="fas fa-inbox fa-5x mb-4" style="color: #a31ed7; opacity: 0.5;"></i>
+            <h3 class="text-light fw-bold mb-2">No Playlists Yet</h3>
+            <p class="text-muted mb-4">Create your first playlist to get started organizing your music</p>
+            <a href="{{ url_for('create_playlist') }}" class="btn fw-semibold" style="background-color: #a31ed7; border: none; color: white; padding: 12px 24px; border-radius: 25px;">
+                <i class="fas fa-folder-plus me-2"></i>Create First Playlist
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div class="mt-5 pt-4 border-top border-secondary">
+        <a href="{{ url_for('player') }}" class="btn" style="background-color: #282828; border: none; color: #b3b3b3; padding: 12px 24px; border-radius: 25px; transition: all 0.3s ease;">
+            <i class="fas fa-arrow-left me-2"></i>Back to Player
+        </a>
+    </div>
+</div>
+
+<style>
+    .playlist-card {
+        transition: all 0.3s ease;
+    }
+
+    .playlist-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 32px rgba(163, 30, 215, 0.25) !important;
+        background-color: #1a1a1a !important;
+    }
+
+    .playlist-icon-container {
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .playlist-card:hover .playlist-icon-container {
+        background: linear-gradient(135deg, #c71fe5 0%, #8d1a9e 100%);
+    }
+
+    a[href]:hover button,
+    a[href]:hover .btn {
+        transition: all 0.3s ease;
+    }
+
+    /* Button hover effects */
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(163, 30, 215, 0.3);
+    }
+
+    .btn:not([style*="background-color: #282828"]):hover {
+        background-color: #c71fe5;
+    }
+
+    .btn[style*="background-color: #282828"]:hover {
+        background-color: #3a3a3a !important;
+        color: #ffffff !important;
+    }
+
+    /* Badge styling */
+    .badge {
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    /* Responsive grid */
+    @media (max-width: 768px) {
+        .col-md-6 {
+            max-width: 100%;
+        }
+    }
+</style>
 {% endblock %}

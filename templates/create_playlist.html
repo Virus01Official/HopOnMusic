@@ -3,31 +3,180 @@
 {% block title %}Create Playlist{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-success fw-bold mb-4">
-        <i class="fas fa-folder-plus"></i> Create New Playlist
-    </h2>
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Header Section -->
+            <div class="mb-5">
+                <h2 class="fw-bold mb-2" style="color: #a31ed7;">
+                    <i class="fas fa-folder-plus me-2"></i> Create New Playlist
+                </h2>
+                <p class="text-muted">Build your perfect music collection</p>
+            </div>
 
-    <form method="POST">
-        <div class="mb-4">
-            <label for="name" class="form-label">Playlist Name</label>
-            <input 
-                type="text" 
-                id="name" 
-                name="name" 
-                class="form-control" 
-                placeholder="Enter playlist name" 
-                required>
-        </div>
+            <!-- Form Card -->
+            <div class="card bg-dark border-0 shadow-lg" style="background-color: #181818 !important; border-radius: 12px;">
+                <div class="card-body p-4">
+                    <form method="POST" id="playlistForm">
+                        <!-- Playlist Name -->
+                        <div class="mb-4">
+                            <label for="name" class="form-label fw-semibold">
+                                <i class="fas fa-music me-2" style="color: #a31ed7;"></i>Playlist Name
+                            </label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                class="form-control bg-secondary text-light border-0" 
+                                placeholder="e.g., My Workout Hits" 
+                                maxlength="100"
+                                required
+                                style="background-color: #282828 !important; padding: 12px 15px;">
+                            <small class="text-muted d-block mt-2">
+                                <span id="nameCharCount">0</span>/100 characters
+                            </small>
+                        </div>
 
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-success">
-                <i class="fas fa-check"></i> Create
-            </button>
-            <a href="{{ url_for('my_playlists') }}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Cancel
-            </a>
+                        <!-- Playlist Description -->
+                        <div class="mb-4">
+                            <label for="description" class="form-label fw-semibold">
+                                <i class="fas fa-pen me-2" style="color: #a31ed7;"></i>Description <span class="text-muted">(Optional)</span>
+                            </label>
+                            <textarea 
+                                id="description" 
+                                name="description" 
+                                class="form-control bg-secondary text-light border-0" 
+                                placeholder="Add a description for your playlist..." 
+                                rows="4"
+                                maxlength="500"
+                                style="background-color: #282828 !important; padding: 12px 15px; resize: vertical;">
+                            </textarea>
+                            <small class="text-muted d-block mt-2">
+                                <span id="descCharCount">0</span>/500 characters
+                            </small>
+                        </div>
+
+                        <!-- Visibility Option -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-eye me-2" style="color: #a31ed7;"></i>Visibility
+                            </label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input 
+                                        class="form-check-input" 
+                                        type="radio" 
+                                        name="visibility" 
+                                        id="public" 
+                                        value="public" 
+                                        checked
+                                        style="background-color: #282828; border-color: #a31ed7;">
+                                    <label class="form-check-label" for="public">
+                                        <i class="fas fa-globe me-1" style="color: #a31ed7;"></i>Public
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input 
+                                        class="form-check-input" 
+                                        type="radio" 
+                                        name="visibility" 
+                                        id="private" 
+                                        value="private"
+                                        style="background-color: #282828; border-color: #a31ed7;">
+                                    <label class="form-check-label" for="private">
+                                        <i class="fas fa-lock me-1" style="color: #a31ed7;"></i>Private
+                                    </label>
+                                </div>
+                            </div>
+                            <small class="text-muted d-block mt-2">Public playlists can be discovered by other users</small>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-3 mt-5">
+                            <button 
+                                type="submit" 
+                                class="btn flex-grow-1" 
+                                style="background-color: #a31ed7; border: none; color: white; padding: 12px; font-weight: 600; border-radius: 25px; transition: all 0.3s ease;">
+                                <i class="fas fa-check me-2"></i> Create Playlist
+                            </button>
+                            <a 
+                                href="{{ url_for('my_playlists') }}" 
+                                class="btn flex-grow-1" 
+                                style="background-color: #282828; border: none; color: #b3b3b3; padding: 12px; font-weight: 600; border-radius: 25px; transition: all 0.3s ease;">
+                                <i class="fas fa-times me-2"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-    </form>
+    </div>
 </div>
+
+<script>
+    // Character count for playlist name
+    const nameInput = document.getElementById('name');
+    const nameCharCount = document.getElementById('nameCharCount');
+    nameInput.addEventListener('input', function() {
+        nameCharCount.textContent = this.value.length;
+    });
+
+    // Character count for description
+    const descInput = document.getElementById('description');
+    const descCharCount = document.getElementById('descCharCount');
+    descInput.addEventListener('input', function() {
+        descCharCount.textContent = this.value.length;
+    });
+
+    // Hover effect for buttons
+    const submitBtn = document.querySelector('button[type="submit"]');
+    const cancelBtn = document.querySelector('a.btn');
+    
+    submitBtn.addEventListener('mouseover', function() {
+        this.style.backgroundColor = '#c71fe5';
+        this.style.transform = 'translateY(-2px)';
+    });
+    submitBtn.addEventListener('mouseout', function() {
+        this.style.backgroundColor = '#a31ed7';
+        this.style.transform = 'translateY(0)';
+    });
+
+    cancelBtn.addEventListener('mouseover', function() {
+        this.style.backgroundColor = '#3a3a3a';
+        this.style.color = '#ffffff';
+        this.style.transform = 'translateY(-2px)';
+    });
+    cancelBtn.addEventListener('mouseout', function() {
+        this.style.backgroundColor = '#282828';
+        this.style.color = '#b3b3b3';
+        this.style.transform = 'translateY(0)';
+    });
+</script>
+
+<style>
+    .form-check-input:checked {
+        background-color: #a31ed7 !important;
+        border-color: #a31ed7 !important;
+    }
+
+    .form-check-input:focus {
+        border-color: #a31ed7;
+        box-shadow: 0 0 0 0.25rem rgba(163, 30, 215, 0.25);
+    }
+
+    .form-control:focus {
+        background-color: #2a2a2a !important;
+        border-color: #a31ed7;
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(163, 30, 215, 0.25);
+    }
+
+    .card {
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 24px rgba(163, 30, 215, 0.15) !important;
+    }
+</style>
 {% endblock %}
