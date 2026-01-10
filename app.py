@@ -31,6 +31,24 @@ GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configura
 # List of user IDs that automatically get moderator status
 MODERATOR_IDS = [int(id) for id in os.getenv('MODERATOR_IDS', '').split(',') if id.strip()] or [1]
 
+def sync_moderators():
+    if not MODERATOR_IDS:
+        return
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+
+        # Build (?, ?, ?, ...) safely for SQL IN clause
+        placeholders = ",".join("?" for _ in MODERATOR_IDS)
+
+        # Promote listed IDs to moderator
+        cursor.execute(
+            f"UPDATE users SET role = 'moderator' WHERE id IN ({placeholders})",
+            MODERATOR_IDS
+        )
+
+        conn.commit()
+        
 # Database initialization
 def init_db():
     with sqlite3.connect('database.db') as conn:
@@ -172,6 +190,8 @@ def init_db():
         conn.commit()
 
 init_db()
+sync_moderators()
+
 
 def allowed_file(filename):
     mime_type, _ = mimetypes.guess_type(filename)
