@@ -38,22 +38,18 @@ def sync_moderators():
     with sqlite3.connect('database.db') as conn:
         cursor = conn.cursor()
 
-        # Build (?, ?, ?, ...) safely for SQL IN clause
         placeholders = ",".join("?" for _ in MODERATOR_IDS)
 
-        # Promote listed IDs to moderator
         cursor.execute(
             f"UPDATE users SET role = 'moderator' WHERE id IN ({placeholders})",
             MODERATOR_IDS
         )
 
         conn.commit()
-        
-# Database initialization
+
 def init_db():
     with sqlite3.connect('database.db') as conn:
         cursor = conn.cursor()
-        # Create or update the users table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -67,7 +63,6 @@ def init_db():
             )
         ''')
         
-        # Add missing columns if they don't exist
         try:
             cursor.execute('ALTER TABLE users ADD COLUMN font TEXT')
         except sqlite3.OperationalError:
@@ -191,7 +186,6 @@ def init_db():
 
 init_db()
 sync_moderators()
-
 
 def allowed_file(filename):
     mime_type, _ = mimetypes.guess_type(filename)
