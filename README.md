@@ -1,3 +1,8 @@
+# Moved
+Project has been moved to Codeberg
+
+[Check it out](https://codeberg.org/VirusIdk/HopOnMusic)
+
 # HopOnMusic
 A Music streaming platform
 
